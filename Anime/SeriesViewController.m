@@ -57,7 +57,20 @@
         [_tapGesture.view removeGestureRecognizer:_tapGesture];
 }
 
--(void)viewDidLoad {
+-(void)updateUserActivityState:(NSUserActivity *)activity
+{
+    [super updateUserActivityState:activity];
+    
+    activity.title = self.series.seriesTitle;
+    [activity addUserInfoEntriesFromDictionary:@{ @"seriesID": self.series.seriesID }];
+//    activity.userInfo = @{ @"seriesID": self.series.seriesID };
+}
+
+-(void)viewDidLoad
+{
+    self.userActivity = [[NSUserActivity alloc] initWithActivityType:@"com.dquesada.Anime.view-series"];
+    [self.userActivity becomeCurrent];
+    
     [super viewDidLoad];
 //    [self registerForMovieNotifications];
     [self performSelectorInBackground:@selector(loadPoster:) withObject:nil];

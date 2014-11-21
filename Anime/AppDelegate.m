@@ -8,6 +8,9 @@
 
 #import "AppDelegate.h"
 #import "Recents.h"
+#import "Series.h"
+#import "SeriesViewController.h"
+#import "RecentViewController.h"
 
 @interface AppDelegate ()
 
@@ -19,6 +22,33 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     [Recents loadRecents];
+    
+    return YES;
+}
+
+- (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray *))restorationHandler
+{
+    NSMutableString *s = [ NSMutableString new ];
+    [s appendFormat:@"%@\n", userActivity.activityType];
+    [s appendFormat:@"%@\n", userActivity.title];
+    [s appendFormat:@"%@\n", userActivity.userInfo.debugDescription];
+    
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        UIAlertView *v;
+        v = [[UIAlertView alloc] initWithTitle:nil message:s delegate:nil cancelButtonTitle:@"Good." otherButtonTitles:nil];
+//        [v show];
+    }];
+    
+    [Series fetchSeriesWithID:userActivity.userInfo[@"seriesID"] completion:^(Series *series) {
+        
+        extern RecentViewController *_recentViewController;
+        
+        SeriesViewController *ser = [_recentViewController.storyboard instantiateViewControllerWithIdentifier:@"seriesViewController"];
+        ser.series = series;
+        
+        [_recentViewController showViewController:ser sender:nil];
+        
+    }];
     
     return YES;
 }

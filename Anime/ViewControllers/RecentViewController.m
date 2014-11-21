@@ -17,6 +17,7 @@
 @import AVKit;
 @import CoreMedia;
 
+RecentViewController *_recentViewController;
 
 @implementation UITableView(THING)
 -(BOOL)touchesShouldCancelInContentView:(UIView *)view
@@ -77,6 +78,7 @@
 
 -(void)viewDidLoad
 {
+    _recentViewController = self;
     [super viewDidLoad];
 //    self.navigationController.navigationBar.barTintColor = [UIColor colorWithWhite:0.0 alpha:0.0];
 //    self.navigationController.navigationBar.barTintColor = [UIColor colorWithWhite:0.0 alpha:0.5];

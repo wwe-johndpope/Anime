@@ -16,6 +16,12 @@
 {
     BOOL hasAppeared;
     SeriesRequest *req;
+    
+    NSString *_seriesIDBeingLoaded;
+    __weak SeriesViewController *_seriesViewController;
+    
+    Series *_seriesBeingLoaded;
+    IBOutlet NSLayoutConstraint *_searchBarTopConstraint;
 }
 @property IBOutlet UISearchBar *bar;
 @property IBOutlet UINavigationBar *navBar;
@@ -25,6 +31,11 @@
 @end
 
 @implementation SearchViewController
+
+-(void)dealloc
+{
+    [[UIApplication sharedApplication] removeObserver:self forKeyPath:@"statusBarHidden"];
+}
 
 -(void)viewDidLoad
 {
@@ -47,6 +58,17 @@
     bar.delegate = self;
     bar.keyboardAppearance = UIKeyboardAppearanceDark;
     
+    NSLayoutConstraint *c = nil;
+    c = [NSLayoutConstraint constraintWithItem:self.navBar
+                                 attribute:NSLayoutAttributeTop
+                                 relatedBy:NSLayoutRelationEqual
+                                    toItem:self.topLayoutGuide
+                                 attribute:NSLayoutAttributeBottom
+                                multiplier:1.0
+                                  constant:0.0];
+    c.identifier = @"SearchBarTop";
+    [self.view addConstraint:c];
+    
     self.navBar.topItem.titleView = bar;
     self.navBar.barStyle = UIBarStyleBlack;
     self.navBar.tintColor = self.navigationController.navigationBar.tintColor;
@@ -54,6 +76,8 @@
     self.navBar.topItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self action:@selector(cancel:)];
     
     self.bar = bar;
+    
+    [[UIApplication sharedApplication] addObserver:self forKeyPath:@"statusBarHidden" options:NSKeyValueObservingOptionNew context:nil];
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -64,6 +88,9 @@
         [self.bar becomeFirstResponder];
     hasAppeared = YES;
     [self.navigationController setNavigationBarHidden:YES animated:animated];
+    
+    if (self.tableView.indexPathForSelectedRow)
+        [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:animated];
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -75,12 +102,33 @@
     [self.navigationController setNavigationBarHidden:NO animated:animated];
 }
 
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    SeriesViewController *c = segue.destinationViewController;
+    [_seriesBeingLoaded fetchEpisodes:^{
+        c.series = _seriesBeingLoaded;
+    }];
+}
+
 -(UIViewController *)childViewControllerForStatusBarHidden
 {
     UIViewController *c = self.presentedViewController;
     if ([c isKindOfClass:[PlayerViewController class]])
         return nil;
     return c;
+}
+
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:@"statusBarHidden"])
+    {
+        
+    }
+}
+
+-(void)updateConstraintForStatusBarHidden:(BOOL)hidden
+{
+    
 }
 
 -(void)cancel:(id)sender
@@ -95,6 +143,8 @@
 
 -(UIBarPosition)positionForBar:(id<UIBarPositioning>)bar
 {
+//    if ([UIApplication sharedApplication].statusBarHidden)
+//        return UIBarPositionTop;
     return UIBarPositionTopAttached;
 }
 
@@ -133,28 +183,29 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    
     Series *s = req.allSeries[indexPath.row];
 
+    _seriesBeingLoaded = s;
+    [self performSegueWithIdentifier:@"showSeries" sender:nil];
     
-    SeriesViewController *ser = [self.storyboard instantiateViewControllerWithIdentifier:@"seriesViewController"];
-    
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone)
-        [self.navigationController pushViewController:ser animated:YES];
-    else
-    {
-        //            UINavigationController *c = [[UINavigationController alloc] initWithRootViewController:ser];
-        //            c.modalPresentationStyle = UIModalPresentationFormSheet;
-        //            c.navigationBar.barStyle = UIBarStyleBlack;
-        //            [self presentViewController:c animated:YES completion:nil];
-        //ser.modalPresentationStyle = UIModalPresentationFormSheet;
-        [self presentViewController:ser animated:YES completion:nil];
-    }
-    
-    [s fetchEpisodes:^{
-        ser.series = s;
-    }];
+//
+//    SeriesViewController *ser = [self.storyboard instantiateViewControllerWithIdentifier:@"seriesViewController"];
+//    
+//    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone)
+//        [self.navigationController pushViewController:ser animated:YES];
+//    else
+//    {
+//        //            UINavigationController *c = [[UINavigationController alloc] initWithRootViewController:ser];
+//        //            c.modalPresentationStyle = UIModalPresentationFormSheet;
+//        //            c.navigationBar.barStyle = UIBarStyleBlack;
+//        //            [self presentViewController:c animated:YES completion:nil];
+//        //ser.modalPresentationStyle = UIModalPresentationFormSheet;
+//        [self presentViewController:ser animated:YES completion:nil];
+//    }
+//    
+//    [s fetchEpisodes:^{
+//        ser.series = s;
+//    }];
 }
 
 @end

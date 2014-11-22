@@ -72,7 +72,7 @@
 
 -(IBAction)search:(id)sender
 {
-    [self.navigationController pushViewController:[self.storyboard instantiateViewControllerWithIdentifier:@"search"] animated:YES];
+    [self performSegueWithIdentifier:@"showSearch" sender:nil];
 }
 
 -(void)viewDidLoad
@@ -122,31 +122,31 @@
     return;
 }
 
--(void)showDetailViewController:(UIViewController *)vc sender:(id)sender
-{
-    if ([vc isKindOfClass:[SeriesViewController class]])
-    {
-        if (self.traitCollection.userInterfaceIdiom == UIUserInterfaceIdiomPhone)
-        {
-            [self.navigationController pushViewController:vc animated:YES];
-            return;
-        }
-    }
-    
-    [super showDetailViewController:vc sender:sender];
-}
-
--(BOOL)canPerformAction:(SEL)action withSender:(id)sender
-{
-    if (action == @selector(showDetailViewController:sender:))
-    {
-        if (self.traitCollection.userInterfaceIdiom == UIUserInterfaceIdiomPad)
-        {
-            return NO;
-        }
-    }
-    return [super canPerformAction:action withSender:sender];
-}
+//-(void)showDetailViewController:(UIViewController *)vc sender:(id)sender
+//{
+//    if ([vc isKindOfClass:[SeriesViewController class]])
+//    {
+//        if (self.traitCollection.userInterfaceIdiom == UIUserInterfaceIdiomPhone)
+//        {
+//            [self.navigationController pushViewController:vc animated:YES];
+//            return;
+//        }
+//    }
+//    
+//    [super showDetailViewController:vc sender:sender];
+//}
+//
+//-(BOOL)canPerformAction:(SEL)action withSender:(id)sender
+//{
+//    if (action == @selector(showDetailViewController:sender:))
+//    {
+//        if (self.traitCollection.userInterfaceIdiom == UIUserInterfaceIdiomPad)
+//        {
+//            return NO;
+//        }
+//    }
+//    return [super canPerformAction:action withSender:sender];
+//}
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {

@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		634D9FE31A202DE100BDEABE /* MainSplitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 634D9FE21A202DE100BDEABE /* MainSplitViewController.m */; };
+		634D9FEE1A202F4D00BDEABE /* MasterNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 634D9FED1A202F4D00BDEABE /* MasterNavigationController.m */; };
+		634D9FF11A21115300BDEABE /* BlankDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 634D9FF01A21115300BDEABE /* BlankDetailViewController.m */; };
 		63669F041A10858D00739484 /* SearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 63669F031A10858D00739484 /* SearchViewController.m */; };
 		63669F0C1A10B2DF00739484 /* DataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 63669F0B1A10B2DF00739484 /* DataStore.m */; };
 		63669F0F1A11588400739484 /* AnimePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 63669F0E1A11588400739484 /* AnimePlayer.m */; };
@@ -29,6 +32,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		634D9FEA1A202DE100BDEABE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 63F784A01A0C92BE001DC623 /* HTMLReader.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1C6C1F4C1A179BF600236076;
+			remoteInfo = "HTMLReader iOS Framework";
+		};
 		63F784911A0C87CE001DC623 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 63F7846F1A0C87CD001DC623 /* Project object */;
@@ -88,6 +98,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		634D9FE11A202DE100BDEABE /* MainSplitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MainSplitViewController.h; path = ViewControllers/MainSplitViewController.h; sourceTree = "<group>"; };
+		634D9FE21A202DE100BDEABE /* MainSplitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MainSplitViewController.m; path = ViewControllers/MainSplitViewController.m; sourceTree = "<group>"; };
+		634D9FEC1A202F4D00BDEABE /* MasterNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MasterNavigationController.h; path = ViewControllers/MasterNavigationController.h; sourceTree = "<group>"; };
+		634D9FED1A202F4D00BDEABE /* MasterNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MasterNavigationController.m; path = ViewControllers/MasterNavigationController.m; sourceTree = "<group>"; };
+		634D9FEF1A21115300BDEABE /* BlankDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BlankDetailViewController.h; path = ViewControllers/BlankDetailViewController.h; sourceTree = "<group>"; };
+		634D9FF01A21115300BDEABE /* BlankDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BlankDetailViewController.m; path = ViewControllers/BlankDetailViewController.m; sourceTree = "<group>"; };
 		63669F021A10858D00739484 /* SearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SearchViewController.h; path = ViewControllers/SearchViewController.h; sourceTree = "<group>"; };
 		63669F031A10858D00739484 /* SearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SearchViewController.m; path = ViewControllers/SearchViewController.m; sourceTree = "<group>"; };
 		63669F0A1A10B2DF00739484 /* DataStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DataStore.h; path = Model/DataStore.h; sourceTree = "<group>"; };
@@ -223,6 +239,7 @@
 			isa = PBXGroup;
 			children = (
 				63F784AA1A0C92BE001DC623 /* libHTMLReader.a */,
+				634D9FEB1A202DE100BDEABE /* HTMLReader.framework */,
 				63F784AC1A0C92BE001DC623 /* Tests on iOS.xctest */,
 				63F784AE1A0C92BE001DC623 /* HTMLReader.framework */,
 				63F784B01A0C92BE001DC623 /* Tests on OS X.xctest */,
@@ -252,6 +269,12 @@
 				63F784CC1A1033ED001DC623 /* RecentViewController.m */,
 				63669F021A10858D00739484 /* SearchViewController.h */,
 				63669F031A10858D00739484 /* SearchViewController.m */,
+				634D9FE11A202DE100BDEABE /* MainSplitViewController.h */,
+				634D9FE21A202DE100BDEABE /* MainSplitViewController.m */,
+				634D9FEC1A202F4D00BDEABE /* MasterNavigationController.h */,
+				634D9FED1A202F4D00BDEABE /* MasterNavigationController.m */,
+				634D9FEF1A21115300BDEABE /* BlankDetailViewController.h */,
+				634D9FF01A21115300BDEABE /* BlankDetailViewController.m */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -345,6 +368,13 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		634D9FEB1A202DE100BDEABE /* HTMLReader.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = HTMLReader.framework;
+			remoteRef = 634D9FEA1A202DE100BDEABE /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		63F784AA1A0C92BE001DC623 /* libHTMLReader.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -415,8 +445,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				634D9FF11A21115300BDEABE /* BlankDetailViewController.m in Sources */,
 				63F784D01A1038EC001DC623 /* Recents.m in Sources */,
+				634D9FEE1A202F4D00BDEABE /* MasterNavigationController.m in Sources */,
 				63F784831A0C87CE001DC623 /* ViewController.m in Sources */,
+				634D9FE31A202DE100BDEABE /* MainSplitViewController.m in Sources */,
 				63F784801A0C87CD001DC623 /* AppDelegate.m in Sources */,
 				63F784CD1A1033ED001DC623 /* RecentViewController.m in Sources */,
 				63F784C51A100C84001DC623 /* Series.m in Sources */,

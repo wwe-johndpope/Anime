@@ -32,6 +32,14 @@
     
     _navBar.delegate = self;
     
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setDefaultTextAttributes:@{
+                                                                                                     NSForegroundColorAttributeName:[UIColor whiteColor],
+                                                                                                     NSFontAttributeName:[UIFont systemFontOfSize:14.0],
+                                                                                                     }];
+    });
+    
     UISearchBar *bar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 500, 44)];
     bar.barStyle = UIBarStyleBlack;
     bar.barTintColor = [UIColor redColor];

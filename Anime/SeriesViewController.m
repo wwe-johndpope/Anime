@@ -16,6 +16,8 @@
 @interface SeriesViewController ()<UIGestureRecognizerDelegate>
 {
     Series *_series;
+    BOOL _needReloadSeriesOnViewDidLoad;
+    UIActivityIndicatorView *_activityIndicatorView;
     
     IBOutlet NSLayoutConstraint *imageHeightConstraint;
     IBOutlet NSLayoutConstraint *textHeightConstraint;
@@ -42,6 +44,8 @@
 @property IBOutlet UILabel *descriptionLabel;
 @property IBOutlet UITextView *descriptionTextView;
 
+@property IBOutletCollection(UIView) NSArray *episodeControls;
+
 @end
 
 @implementation SeriesViewController
@@ -60,38 +64,41 @@
 }
 
 -(void)viewDidLoad {
+    
     [super viewDidLoad];
-//    [self registerForMovieNotifications];
-    [self performSelectorInBackground:@selector(loadPoster:) withObject:nil];
     
-    self.titleLabel.text = self.series.seriesTitle;
-    self.statusLabel.text = self.series.seriesStatusDescription;
-    self.descriptionLabel.text = self.series.seriesDescription;
-    self.descriptionTextView.text = self.series.seriesDescription;
+    _descriptionTextView.scrollsToTop = NO;
     
-    self.navigationItem.title = self.series.seriesTitle;
+    
+    _descriptionTextView.text = nil;
+    _statusLabel.text = nil;
+    _titleLabel.text = nil;
+    [_episodeControls setValue:@(0.0) forKey:@"alpha"];
+    self.navigationItem.title = nil;
     
     self.tableView.tableHeaderView.backgroundColor = [UIColor clearColor];
-    
-    // For some reason, changes to this in IB don't take effect; the text stays black.
-    self.descriptionTextView.textColor = [UIColor lightGrayColor];
-    
     [self resizeHeaderView];
-    
-    // I hate these default space things which screw up the sizing and colors.
-//    self.tableView.tableFooterView = [[UIView alloc ]initWithFrame:CGRectMake(0, 0, 0, .5)];
     
     BOOL isiPad = (self.traitCollection.userInterfaceIdiom == UIUserInterfaceIdiomPad);
     _installsGesture = _floatsHeader = isiPad;
     _usesSnapshotView = isiPad;
-    
-//    _floatsHeader = NO;
     
     if (_floatsHeader)
     {
 //        self.tableView.tableHeaderView.userInteractionEnabled = YES;
         sectionHeader = self.tableView.tableHeaderView;
         self.tableView.tableHeaderView = nil;
+    }
+    
+    UIActivityIndicatorView *view = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    self.tableView.backgroundView = view;
+    [view startAnimating];
+    _activityIndicatorView = view;
+    
+    if (_needReloadSeriesOnViewDidLoad)
+    {
+        self.series = self.series;
+        _needReloadSeriesOnViewDidLoad = NO;
     }
 }
 
@@ -259,9 +266,6 @@
         
         [header layoutIfNeeded];
         
-        //        textHeightConstraint.constant = self.descriptionTextView.contentSize.height;
-        
-        //        [self.descriptionTextView sizeToFit];
         textHeightConstraint.constant = self.descriptionTextView.contentSize.height;
         
         // Layout AGAIN, since we changed the height of the textview.
@@ -270,13 +274,8 @@
         [self.tableView beginUpdates];
         
         header.frame = [header.subviews[0] bounds];
-//        header.frame = [header.subviews[0] bounds];
         
         [self.tableView endUpdates];
-        
-//        self.tableView.tableHeaderView = header;
-        
-//        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
         
         if (_floatsHeader)
         {
@@ -343,7 +342,32 @@
 -(void)setSeries:(Series *)series
 {
     _series = series;
-    NSLog(@"SeriesViewController setSeries:%@", series.seriesID);
+    
+    if (!self.isViewLoaded)
+    {
+        _needReloadSeriesOnViewDidLoad = YES;
+        return;
+    }
+    
+    [self performSelectorInBackground:@selector(loadPoster:) withObject:nil];
+    
+    self.titleLabel.text = self.series.seriesTitle;
+    self.statusLabel.text = self.series.seriesStatusDescription;
+    self.descriptionLabel.text = self.series.seriesDescription;
+    
+    self.descriptionTextView.text = self.series.seriesDescription;
+    // For some reason, changes to this in IB don't take effect; the text stays black.
+    self.descriptionTextView.textColor = [UIColor lightGrayColor];
+    
+    _activityIndicatorView.hidden = YES;
+    [_episodeControls setValue:@(1.0) forKey:@"alpha"];
+    
+    self.navigationItem.title = self.series.seriesTitle;
+    
+    if (self.isViewLoaded)
+    {
+        [self.tableView reloadData];
+    }
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath

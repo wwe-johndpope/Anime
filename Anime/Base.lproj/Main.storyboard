@@ -410,6 +410,8 @@
                         <outlet property="statusLabel" destination="Zyr-qD-9KY" id="DOm-8g-eSC"/>
                         <outlet property="textHeightConstraint" destination="AZP-HQ-Je4" id="jNj-Yk-Ink"/>
                         <outlet property="titleLabel" destination="J1K-Ty-25A" id="whQ-m4-P0t"/>
+                        <outletCollection property="episodeControls" destination="zUq-vP-sO7" id="5g8-0v-FC6"/>
+                        <outletCollection property="episodeControls" destination="uD2-i0-Qfn" id="IL5-OZ-0B8"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Khl-ZS-zNQ" userLabel="First Responder" sceneMemberID="firstResponder"/>

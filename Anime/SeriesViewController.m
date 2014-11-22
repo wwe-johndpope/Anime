@@ -15,6 +15,8 @@
 
 @interface SeriesViewController ()<UIGestureRecognizerDelegate>
 {
+    Series *_series;
+    
     IBOutlet NSLayoutConstraint *imageHeightConstraint;
     IBOutlet NSLayoutConstraint *textHeightConstraint;
     
@@ -331,6 +333,17 @@
     if (_alternateSort)
         idx = (self.series.episodes.count - 1 - idx);
     return self.series.episodes[idx];
+}
+
+-(Series *)series
+{
+    return _series;
+}
+
+-(void)setSeries:(Series *)series
+{
+    _series = series;
+    NSLog(@"SeriesViewController setSeries:%@", series.seriesID);
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath

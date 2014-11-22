@@ -128,24 +128,24 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     Series *s = req.allSeries[indexPath.row];
+
+    
+    SeriesViewController *ser = [self.storyboard instantiateViewControllerWithIdentifier:@"seriesViewController"];
+    
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone)
+        [self.navigationController pushViewController:ser animated:YES];
+    else
+    {
+        //            UINavigationController *c = [[UINavigationController alloc] initWithRootViewController:ser];
+        //            c.modalPresentationStyle = UIModalPresentationFormSheet;
+        //            c.navigationBar.barStyle = UIBarStyleBlack;
+        //            [self presentViewController:c animated:YES completion:nil];
+        //ser.modalPresentationStyle = UIModalPresentationFormSheet;
+        [self presentViewController:ser animated:YES completion:nil];
+    }
     
     [s fetchEpisodes:^{
-        
-        SeriesViewController *ser = [self.storyboard instantiateViewControllerWithIdentifier:@"seriesViewController"];
         ser.series = s;
-        
-        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone)
-            [self.navigationController pushViewController:ser animated:YES];
-        else
-        {
-//            UINavigationController *c = [[UINavigationController alloc] initWithRootViewController:ser];
-//            c.modalPresentationStyle = UIModalPresentationFormSheet;
-//            c.navigationBar.barStyle = UIBarStyleBlack;
-//            [self presentViewController:c animated:YES completion:nil];
-            ser.modalPresentationStyle = UIModalPresentationFormSheet;
-            [self presentViewController:ser animated:YES completion:nil];
-        }
-        
     }];
 }
 

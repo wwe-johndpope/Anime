@@ -203,8 +203,31 @@
 {
     [super viewDidAppear:animated];
     
-    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
+    // We need to use PlayAndRecord so we can set the override to use the 'speaker' port.
+    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayAndRecord error:nil];
     [[AVAudioSession sharedInstance] setActive:YES error:nil];
+    
+    [self setForceHeadphonesAudio:[self hasHeadphones]];
+}
+
+-(void)setForceHeadphonesAudio:(BOOL)force
+{
+    NSError *error = nil;
+    AVAudioSessionPortOverride override = force ? AVAudioSessionPortOverrideSpeaker : AVAudioSessionPortOverrideNone;
+    if (![[AVAudioSession sharedInstance] overrideOutputAudioPort:override error:&error])
+        NSLog(@"overrideOutputAudioPort error: %@", error);
+}
+
+-(BOOL)hasHeadphones
+{
+    AVAudioSessionRouteDescription *route = [[AVAudioSession sharedInstance] currentRoute];
+    
+    for (AVAudioSessionPortDescription *output in route.outputs)
+    {
+        if ([output.portType isEqualToString:AVAudioSessionPortHeadphones])
+            return YES;
+    }
+    return NO;
 }
 
 #pragma mark - AnimePlayerDelegate

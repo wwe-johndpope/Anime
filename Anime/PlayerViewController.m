@@ -45,7 +45,23 @@
 -(void)viewDidLoad
 {
     [super viewDidLoad];
-    [self makeThing];
+    [self makeThing];    
+    
+//    UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(0, 200, 200, 50)];
+//    [btn setTitle:@"DoTheThing" forState:UIControlStateNormal];
+//    [btn addTarget:self action:@selector(doThing:) forControlEvents:UIControlEventTouchUpInside];
+//    [self.view addSubview:btn];
+}
+
+//-(void)doThing:(id)sender
+//{
+//    // Show the current routes.
+//    [[[UIAlertView alloc] initWithTitle:@"Thing" message:[AVAudioSession sharedInstance].currentRoute.debugDescription delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+//}
+
+-(void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -204,11 +220,16 @@
     [super viewDidAppear:animated];
     
     // We need to use PlayAndRecord so we can set the override to use the 'speaker' port.
-    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayAndRecord error:nil];
+//    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayAndRecord error:nil];
+    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
     [[AVAudioSession sharedInstance] setActive:YES error:nil];
     
-    [self setForceHeadphonesAudio:[self hasHeadphones]];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAVAudioSessionRouteChangeNotification:) name:AVAudioSessionRouteChangeNotification object:nil];
+    
+//    [self setForceHeadphonesAudio:[self hasHeadphones:nil]];
 }
+
+#pragma mark - AudioSession stuff
 
 -(void)setForceHeadphonesAudio:(BOOL)force
 {
@@ -218,9 +239,10 @@
         NSLog(@"overrideOutputAudioPort error: %@", error);
 }
 
--(BOOL)hasHeadphones
+-(BOOL)hasHeadphones:(AVAudioSessionRouteDescription *)route
 {
-    AVAudioSessionRouteDescription *route = [[AVAudioSession sharedInstance] currentRoute];
+    if (!route)
+        route = [[AVAudioSession sharedInstance] currentRoute];
     
     for (AVAudioSessionPortDescription *output in route.outputs)
     {
@@ -228,6 +250,89 @@
             return YES;
     }
     return NO;
+}
+
+-(BOOL)hasExternalOutput:(AVAudioSessionRouteDescription *)route
+{
+    if (!route)
+        route = [[AVAudioSession sharedInstance] currentRoute];
+    
+    for (AVAudioSessionPortDescription *output in route.outputs)
+    {
+        if ([output.portType isEqualToString:AVAudioSessionPortHDMI])
+            return YES;
+    }
+    return NO;
+}
+
+-(void)handleAVAudioSessionRouteChangeNotification:(NSNotification *)note
+{
+    AVAudioSessionRouteChangeReason reason = (AVAudioSessionRouteChangeReason)[note.userInfo[AVAudioSessionRouteChangeReasonKey] integerValue];
+    
+    NSLog(@"Reason: %ld", (long)reason);
+    
+    if (reason == AVAudioSessionRouteChangeReasonOverride)
+        return;
+    
+    // We don't want to trigger 'infinite' loops by repeatedly changing the category in this handler.
+    if (reason == AVAudioSessionRouteChangeReasonCategoryChange)
+        return;
+    
+    // We get notified of this twice after plugging in the HDMI adapter. Since we already got the
+    // first notification (NewDeviceAvailable), we don't need to handle any of these.
+    if (reason == AVAudioSessionRouteChangeReasonRouteConfigurationChange)
+        return;
+    
+    
+    
+    BOOL oldExt = [self hasExternalOutput:note.userInfo[AVAudioSessionRouteChangePreviousRouteKey]];
+    BOOL newExt = [self hasExternalOutput:nil];
+    BOOL oldPhones = [self hasHeadphones:note.userInfo[AVAudioSessionRouteChangePreviousRouteKey]];
+    BOOL newPhones = [self hasHeadphones:nil];
+
+    
+    BOOL force = NO;
+    
+    if (!oldExt && !oldPhones)
+        force = NO;
+    if ( oldExt && !oldPhones)
+        force = newPhones;
+    if (!oldExt &&  oldPhones)
+        force = newExt;
+    if ( oldExt &&  oldPhones)
+        force = NO;
+    
+//    AVAudioSessionPortOverride o = force ? AVAudioSessionPortOverrideSpeaker : AVAudioSessionPortOverrideNone;
+    
+//    NSString *strI = force ? @"YES" : @"NO";
+//    [[[UIAlertView alloc] initWithTitle:@"Headphones" message:strI delegate:nil cancelButtonTitle:@"A'ight" otherButtonTitles:nil] show];
+    
+    static int seq = 0;
+    [[[UIAlertView alloc] initWithTitle:@"Route Changed." message:[NSString stringWithFormat:@"Seq: %d\nReason: %d\nExt: %d %d\nPhones: %d %d\nForce: %d", (seq++), (int)reason, (int)oldExt, (int)newExt, (int)oldPhones, (int)newPhones, (int)force] delegate:nil cancelButtonTitle:@"A'ight" otherButtonTitles:nil] show];
+    
+    
+    
+//    [self setForceHeadphonesAudio:force];
+    
+    
+    NSError *error = nil;
+    if (force)
+    {
+        [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayAndRecord error:&error];
+    } else
+    {
+        [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:&error];
+    }
+    
+    NSLog(@"setCategory error: %@", error);
+    
+    
+    
+//    BOOL headphones = [self hasHeadphones];
+//    [self setForceHeadphonesAudio:headphones];
+    
+//    NSString *str = headphones ? @"YES" : @"NO";
+//    [[[UIAlertView alloc] initWithTitle:@"Headphones" message:str delegate:nil cancelButtonTitle:@"A'ight" otherButtonTitles:nil] show];
 }
 
 #pragma mark - AnimePlayerDelegate

@@ -36,6 +36,8 @@
     Episode *_currentEpisode;
     
     UILabel *thing;
+    
+    BOOL _cachedHasHeadphones; // It might be hard to accurately keep a good value for this.
 }
 -(void)nextTrack;
 @end
@@ -283,40 +285,60 @@
     if (reason == AVAudioSessionRouteChangeReasonRouteConfigurationChange)
         return;
     
-    
-    
     BOOL oldExt = [self hasExternalOutput:note.userInfo[AVAudioSessionRouteChangePreviousRouteKey]];
     BOOL newExt = [self hasExternalOutput:nil];
     BOOL oldPhones = [self hasHeadphones:note.userInfo[AVAudioSessionRouteChangePreviousRouteKey]];
     BOOL newPhones = [self hasHeadphones:nil];
+    
+    switch (reason) {
+        case AVAudioSessionRouteChangeReasonNewDeviceAvailable:
+            
+            // Plugging in headphones
+            if (newPhones && !oldPhones)
+            {
+                _cachedHasHeadphones = YES;
+                
+                [self setRecordMode:oldExt];
+            }
+            
+            // Plugging in external display
+            else if (newExt && !oldExt)
+            {
+                [self setRecordMode:oldPhones];
+            }
+            
+            
+            break;
+            
+        case AVAudioSessionRouteChangeReasonOldDeviceUnavailable:
+            
+            // Unplugging headphones.
+            if (oldPhones && !newPhones)
+            {
+                _cachedHasHeadphones = YES;
+                [self setRecordMode:NO];
+            }
+            
+            // Unplugging external display.
+            // We don't actually get notified of this, probably because the external display isn't actually
+            // the active device that stops being available. If we really need to know when this happens, perhaps
+            // we can try registering for notifications to determine when the external UIScreen is removed.
+            else if (oldExt && !newExt)
+            {
+                [self setRecordMode:NO];
+            }
+            
+            break;
+            
+        default:
+            break;
+    }
+}
 
-    
-    BOOL force = NO;
-    
-    if (!oldExt && !oldPhones)
-        force = NO;
-    if ( oldExt && !oldPhones)
-        force = newPhones;
-    if (!oldExt &&  oldPhones)
-        force = newExt;
-    if ( oldExt &&  oldPhones)
-        force = NO;
-    
-//    AVAudioSessionPortOverride o = force ? AVAudioSessionPortOverrideSpeaker : AVAudioSessionPortOverrideNone;
-    
-//    NSString *strI = force ? @"YES" : @"NO";
-//    [[[UIAlertView alloc] initWithTitle:@"Headphones" message:strI delegate:nil cancelButtonTitle:@"A'ight" otherButtonTitles:nil] show];
-    
-    static int seq = 0;
-    [[[UIAlertView alloc] initWithTitle:@"Route Changed." message:[NSString stringWithFormat:@"Seq: %d\nReason: %d\nExt: %d %d\nPhones: %d %d\nForce: %d", (seq++), (int)reason, (int)oldExt, (int)newExt, (int)oldPhones, (int)newPhones, (int)force] delegate:nil cancelButtonTitle:@"A'ight" otherButtonTitles:nil] show];
-    
-    
-    
-//    [self setForceHeadphonesAudio:force];
-    
-    
+-(void)setRecordMode:(BOOL)mode
+{
     NSError *error = nil;
-    if (force)
+    if (mode)
     {
         [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayAndRecord error:&error];
     } else
@@ -325,14 +347,6 @@
     }
     
     NSLog(@"setCategory error: %@", error);
-    
-    
-    
-//    BOOL headphones = [self hasHeadphones];
-//    [self setForceHeadphonesAudio:headphones];
-    
-//    NSString *str = headphones ? @"YES" : @"NO";
-//    [[[UIAlertView alloc] initWithTitle:@"Headphones" message:str delegate:nil cancelButtonTitle:@"A'ight" otherButtonTitles:nil] show];
 }
 
 #pragma mark - AnimePlayerDelegate

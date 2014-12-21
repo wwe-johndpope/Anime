@@ -31,11 +31,6 @@
 
 @implementation AnimePlayer
 
-+(void)load
-{
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playerDidPlayToEnd:) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
-}
-
 +(StreamQuality)defaultStreamQuality
 {
     NSNumber *val = [[NSUserDefaults standardUserDefaults] valueForKey:@"DefaultEpisodeStreamQuality"];
@@ -116,11 +111,9 @@
         NSLog(@"No more episodes to add to queue.");
         return;
     }
+    
     Episode *ep = [_episodeQueue firstObject];
     [_episodeQueue removeObjectAtIndex:0];
-    
-#if 1
-// Old way of doing things.
     
     StreamQuality q = [self.class defaultStreamQuality];
     [ep fetchStreamURLs:^{
@@ -133,45 +126,7 @@
         
         if (completion)
             dispatch_async(dispatch_get_main_queue(), completion);
-        
     }];
-    
-
-#else
-    // Thing from stackoverflow
-    [ep fetchVideoURLs:^(NSArray *urls) {
-        NSString *url = urls.firstObject;
-        
-        AVURLAsset *asset = [[AVURLAsset alloc] initWithURL:[NSURL URLWithString:url] options:nil];
-        NSArray *keys = @[@"playable", @"tracks",@"duration" ];
-        
-        EpisodePlayerItem *item = [[EpisodePlayerItem alloc] initWithAsset:asset];
-        item.episode = ep;
-        
-        [asset loadValuesAsynchronouslyForKeys:keys completionHandler:^()
-         {
-             // make sure everything downloaded properly
-             for (NSString *thisKey in keys) {
-                 NSError *error = nil;
-                 AVKeyValueStatus keyStatus = [asset statusOfValueForKey:thisKey error:&error];
-                 if (keyStatus == AVKeyValueStatusFailed) {
-                     return ;
-                 }
-             }
-             
-//             EpisodePlayerItem *item = [[EpisodePlayerItem alloc] initWithAsset:asset];
-//             item.episode = ep;
-             
-             dispatch_async(dispatch_get_main_queue(), ^ {
-                 [self insertItem:item afterItem:nil];
-                 
-                 if (completion)
-                     completion();
-             });
-         }];
-    }];
-//        [item seekToTime:CMTimeMakeWithSeconds((Float64)startTime, 1)];
-#endif
 }
 
 -(void)addNumberOfItemsToPlayerQueue:(NSInteger)count
@@ -234,7 +189,5 @@
         }];
     }];
 }
-
-//+playerwi
 
 @end

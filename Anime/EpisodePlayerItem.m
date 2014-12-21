@@ -14,7 +14,6 @@
 -(instancetype)initWithEpisode:(Episode *)ep inSeries:(Series *)series desiredQuality:(StreamQuality)quality;
 @end
 
-
 @implementation EpisodePlayerItem
 
 -(instancetype)initWithEpisode:(Episode *)ep inSeries:(Series *)series desiredQuality:(StreamQuality)quality
@@ -27,4 +26,5 @@
     }
     return self;
 }
+
 @end

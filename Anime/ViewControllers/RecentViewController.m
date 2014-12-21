@@ -122,6 +122,57 @@
     return;
 }
 
+-(void)showDetailViewController:(UIViewController *)vc sender:(id)sender
+{
+    if ([vc isKindOfClass:[SeriesViewController class]])
+    {
+        if (self.traitCollection.userInterfaceIdiom == UIUserInterfaceIdiomPhone)
+        {
+            [self.navigationController pushViewController:vc animated:YES];
+            return;
+        }
+    }
+    
+    [super showDetailViewController:vc sender:sender];
+}
+
+-(BOOL)canPerformAction:(SEL)action withSender:(id)sender
+{
+    if (action == @selector(showDetailViewController:sender:))
+    {
+        if (self.traitCollection.userInterfaceIdiom == UIUserInterfaceIdiomPad)
+        {
+            return NO;
+        }
+    }
+    return [super canPerformAction:action withSender:sender];
+}
+
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([segue.identifier isEqualToString:@"showSeries"])
+    {
+        // We need to grab a Series object and populate the destination view controller.
+        SeriesViewController *dest = segue.destinationViewController;
+        
+        if ([sender isKindOfClass:[Series class]])
+        {
+            dest.series = sender;
+        } else if ([sender isKindOfClass:[UIControl class]])
+        {
+            while (sender && ![sender isKindOfClass:[UITableViewCell class]])
+                sender = [sender superview];
+            NSAssert(sender, @"Sender was not a subview of a UITableViewCell.");
+            NSIndexPath *ip = [self.tableView indexPathForCell:sender];
+            RecentWatch *w = [[Recents defaultRecentStore] watches][ip.row];
+            
+            [Series fetchSeriesWithID:w.seriesID completion:^(Series *series) {
+                dest.series = series;
+            }];
+        }
+    }
+}
+
 #pragma mark - Notifications
 
 -(void)thumbnailChanged:(NSNotification *)note
@@ -144,7 +195,7 @@
 #pragma mark - RecentTableViewCellDelegate
 
 -(void)recentTableViewCellDidClickInfoButton:(RecentTableViewCell *)cell
-{
+{return;
     NSIndexPath *ipath = [self.tableView indexPathForCell:cell];
     RecentWatch *watch = [[Recents defaultRecentStore] watches][ipath.row];
     

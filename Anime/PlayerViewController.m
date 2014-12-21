@@ -144,8 +144,6 @@
 {
     if ((self = [self init]))
     {
-        Episode *ep = [watch makeEpisode];
-        
         // Ugly.
         [Series fetchSeriesWithID:watch.seriesID completion:^(Series *sr) {
            
@@ -173,12 +171,6 @@
     
     id val = [self valueForKey:@"_showsPlaybackControlsView"];
     BOOL s = [val boolValue];
-    
-    //[self updateHUD];
-    
-//    [UIView animateWithDuration:0.35 delay:0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
-//            thing.alpha = (CGFloat)!!s;
-//    } completion:nil];
     
     [UIView animateWithDuration:0.42 delay:0 usingSpringWithDamping:.9 initialSpringVelocity:0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
         thing.alpha = (CGFloat)!!s;

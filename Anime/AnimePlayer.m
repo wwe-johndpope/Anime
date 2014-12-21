@@ -10,26 +10,12 @@
 #import "Episode.h"
 #import "Series.h"
 #import "Recents.h"
-
-@interface EpisodePlayerItem()
-// Assumes the urls for the episode stream are already fetched.
--(instancetype)initWithEpisode:(Episode *)ep desiredQuality:(StreamQuality)quality;
-@end
+#import "EpisodeURLAsset.h"
+#import "EpisodePlayerItem.h"
 
 
-@implementation EpisodePlayerItem
--(instancetype)initWithEpisode:(Episode *)ep desiredQuality:(StreamQuality)quality
-{
-    StreamQuality actual = StreamQualityUnknown;
-    NSURL *url = [ep streamURLOfMaximumQuality:quality actualQuality:&actual];
-    
-    if ((self = [super initWithURL:url]))
-    {
-        _episode = ep;
-        _playbackQuality = actual;
-    }
-    return self;
-}
+@interface EpisodePlayerItem(Private)
+-(instancetype)initWithEpisode:(Episode *)ep inSeries:(Series *)series desiredQuality:(StreamQuality)quality;
 @end
 
 
@@ -138,12 +124,8 @@
     
     StreamQuality q = [self.class defaultStreamQuality];
     [ep fetchStreamURLs:^{
-    
-//        NSURL *url = [ep streamURLOfMaximumQuality:q];
-//        EpisodePlayerItem *item = [[EpisodePlayerItem alloc] initWithURL:url];
-//        item.episode = ep;
   
-        EpisodePlayerItem *item = [[EpisodePlayerItem alloc] initWithEpisode:ep desiredQuality:q];
+        EpisodePlayerItem *item = [[EpisodePlayerItem alloc] initWithEpisode:ep inSeries:_series desiredQuality:q];
         [item seekToTime:CMTimeMakeWithSeconds((Float64)startTime, 1)];
         
 #warning Exception here.

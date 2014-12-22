@@ -134,4 +134,39 @@ static SeriesStatus statusForStatusDescription(NSString *desc)
     }];
 }
 
+-(void)fetchImage:(void (^)(BOOL, NSError *))completion
+{
+    if (!completion)
+        completion = ^(BOOL s, NSError *e){ };
+    
+    if (_seriesImage)
+    {
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            completion(YES, nil);
+        }];
+        return;
+    }
+    
+    NSURLRequest *req = [[NSURLRequest alloc] initWithURL:self.imageURL cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:7.0];
+    [NSURLConnection sendAsynchronousRequest:req queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+       
+        if (!data)
+        {
+            completion(NO, connectionError);
+            return;
+        }
+        
+        UIImage *img = [UIImage imageWithData:data];
+        
+        if (!img)
+        {
+            completion(NO, nil);
+            return;
+        }
+        
+        _seriesImage = img;
+        completion(YES, nil);
+    }];
+}
+
 @end

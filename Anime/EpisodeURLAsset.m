@@ -56,8 +56,43 @@
         
         [metadata addObject:item];
     }
+
+    if (self.series.seriesImage)
+    {
+        AVMutableMetadataItem *item = [AVMutableMetadataItem new];
+        item.keySpace = AVMetadataKeySpaceCommon;
+        item.key = AVMetadataCommonKeyArtwork;
+        item.value = UIImagePNGRepresentation(self.series.seriesImage);
+        
+        [metadata addObject:item];
+    }
     
     return [metadata copy];
+}
+
+-(void)loadValuesAsynchronouslyForKeys:(NSArray *)keys completionHandler:(void (^)(void))handler
+{
+    if ([keys isEqualToArray:@[ @"commonMetadata" ]] && self.series)
+    {
+        // When we're loading the metadata, we want to do two things asynchronously.
+        // In addition to the super call, we'd also like to load the series image. (if needed)
+        
+        // As a handler for each of the calls, we check to see if the other is done.
+        NSLock *lock = [[NSLock alloc] init];
+        __block int count = 2;
+        
+        void (^subhandler)() = ^{
+            [lock lock];
+            if (!--count)
+                handler();
+            [lock unlock];
+        };
+        
+        [super loadValuesAsynchronouslyForKeys:keys completionHandler:subhandler];
+        [self.series fetchImage:^(BOOL success, NSError *error) { subhandler(); }];
+    }
+    else
+        [super loadValuesAsynchronouslyForKeys:keys completionHandler:handler];
 }
 
 @end

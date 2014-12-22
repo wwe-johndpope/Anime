@@ -98,9 +98,7 @@
         _allStreamQualities = [dict.allKeys sortedArrayUsingSelector:@selector(compare:)];
         
         if (completion)
-            dispatch_async(dispatch_get_main_queue(), ^{
-                completion();
-            });
+            dispatch_async(dispatch_get_main_queue(), completion);
     }];
 }
 

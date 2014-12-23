@@ -1,0 +1,9 @@
+Package: com.dquesada.Anime.cydia
+Name: Anime
+Depends: 
+Version: 0.0.1
+Architecture: iphoneos-arm
+Description: A Mobile App for KissAnime.
+Maintainer: David Quesada
+Author: David Quesada
+Section: Utilities

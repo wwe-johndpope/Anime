@@ -1,0 +1,11 @@
+*.deb
+
+# Place any resources you want copied in the RawResources/ directory.
+Resources/
+
+obj/
+
+*.o
+*.stamp
+
+_

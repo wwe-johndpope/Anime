@@ -1,0 +1,22 @@
+{
+    CFBundleDisplayName = "Anime(Cydia)";
+    CFBundleExecutable = "Anime";
+    CFBundleIconFile = icon.png;
+    CFBundleIdentifier = "com.dquesada.Anime.cydia";
+    CFBundleInfoDictionaryVersion = 6.0;
+    CFBundlePackageType = APPL;
+    CFBundleSignature = "????";
+    CFBundleSupportedPlatforms = (
+	iPhoneOS
+    );
+    CFBundleVersion = 1.0;
+    DTPlatformName = iphoneos;
+    DTSDKName = iphoneos8.1;
+    LSRequiresIPhoneOS = 1;
+    MinimumOSVersion = "8.1";
+    UIMainStoryboardFile = Main;
+    UILaunchStoryboardName = LaunchScreen;
+    UIBackgroundModes = (
+    audio
+    );
+}

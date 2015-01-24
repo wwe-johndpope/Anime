@@ -102,7 +102,17 @@ static SeriesStatus statusForStatusDescription(NSString *desc)
     
     NSMutableArray *episodes = [NSMutableArray new];
     
-    for (HTMLElement *ep in [contentNode nodesMatchingSelector:@".episode"])
+    // var wra = asp.wrap("base64encodedstuffbBus889fjJL9+jflsk+etcetera"); \n document.write(wra)
+    NSString *encodedContentScript = [[contentNode firstNodeMatchingSelector:@"script"] textContent];
+    encodedContentScript = [encodedContentScript substringFromIndex:1+[encodedContentScript rangeOfString:@"\""].location];
+    encodedContentScript = [encodedContentScript substringToIndex:[encodedContentScript rangeOfString:@"\""].location];
+    
+    NSData *episodeListData = [[NSData alloc] initWithBase64EncodedString:encodedContentScript options:0];
+    NSString *episodeListContent = [[NSString alloc] initWithData:episodeListData encoding:NSUTF8StringEncoding];
+    
+    id episodeList = [HTMLDocument documentWithString:episodeListContent];
+    
+    for (HTMLElement *ep in [episodeList nodesMatchingSelector:@".episode"])
     {
         NSString *episodeID = ep.attributes[@"data-value"];
         NSString *episodeDesc = ep.textContent;

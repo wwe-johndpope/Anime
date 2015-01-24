@@ -13,6 +13,7 @@
 
 @interface EpisodePlayerItem : AVPlayerItem
 
+@property(readonly) Series *series;
 @property(readonly) Episode *episode;
 @property(readonly) StreamQuality playbackQuality;
 

@@ -21,6 +21,7 @@
     EpisodeURLAsset *asset = [[EpisodeURLAsset alloc] initWithEpisode:ep inSeries:series quality:quality];
     if ((self = [self initWithAsset:asset]))
     {
+        _series = series;
         _episode = ep;
         _playbackQuality = asset.playbackQuality;
     }

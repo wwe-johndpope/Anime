@@ -65,7 +65,7 @@
     req.HTTPMethod = @"POST";
     req.HTTPBody = [bodyString dataUsingEncoding:NSUTF8StringEncoding];
     
-    [NSURLConnection sendAsynchronousRequest:req queue:[NSOperationQueue new] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+    [NSURLConnection sendAsynchronousKissAnimeRequest:req queue:[NSOperationQueue new] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
         data = [[NSData alloc] initWithBase64EncodedData:data options:0];
         NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
         

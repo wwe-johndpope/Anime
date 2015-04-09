@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		63233C3F1AD4CF74000DC74D /* NSURLConnection+KissAnime.m in Sources */ = {isa = PBXBuildFile; fileRef = 63233C3E1AD4CF74000DC74D /* NSURLConnection+KissAnime.m */; };
 		63294E251A46B7E8004BFCD6 /* EpisodeURLAsset.m in Sources */ = {isa = PBXBuildFile; fileRef = 63294E241A46B7E8004BFCD6 /* EpisodeURLAsset.m */; };
 		63294E281A46B915004BFCD6 /* EpisodePlayerItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 63294E271A46B915004BFCD6 /* EpisodePlayerItem.m */; };
 		63669F041A10858D00739484 /* SearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 63669F031A10858D00739484 /* SearchViewController.m */; };
@@ -96,6 +97,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		63233C3D1AD4CF74000DC74D /* NSURLConnection+KissAnime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURLConnection+KissAnime.h"; sourceTree = "<group>"; };
+		63233C3E1AD4CF74000DC74D /* NSURLConnection+KissAnime.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = "NSURLConnection+KissAnime.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		63294E231A46B7E8004BFCD6 /* EpisodeURLAsset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EpisodeURLAsset.h; sourceTree = "<group>"; };
 		63294E241A46B7E8004BFCD6 /* EpisodeURLAsset.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EpisodeURLAsset.m; sourceTree = "<group>"; };
 		63294E261A46B915004BFCD6 /* EpisodePlayerItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EpisodePlayerItem.h; sourceTree = "<group>"; };
@@ -125,11 +128,11 @@
 		63F784BD1A0FEB04001DC623 /* PlayerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerViewController.h; sourceTree = "<group>"; };
 		63F784BE1A0FEB04001DC623 /* PlayerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayerViewController.m; sourceTree = "<group>"; };
 		63F784C01A0FF644001DC623 /* Episode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Episode.h; sourceTree = "<group>"; };
-		63F784C11A0FF644001DC623 /* Episode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Episode.m; sourceTree = "<group>"; };
+		63F784C11A0FF644001DC623 /* Episode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = Episode.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		63F784C31A100C84001DC623 /* Series.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Series.h; sourceTree = "<group>"; };
-		63F784C41A100C84001DC623 /* Series.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Series.m; sourceTree = "<group>"; };
+		63F784C41A100C84001DC623 /* Series.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = Series.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		63F784C71A100F22001DC623 /* SeriesRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SeriesRequest.h; path = Model/SeriesRequest.h; sourceTree = "<group>"; };
-		63F784C81A100F22001DC623 /* SeriesRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SeriesRequest.m; path = Model/SeriesRequest.m; sourceTree = "<group>"; };
+		63F784C81A100F22001DC623 /* SeriesRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = SeriesRequest.m; path = Model/SeriesRequest.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		63F784CB1A1033ED001DC623 /* RecentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RecentViewController.h; path = ViewControllers/RecentViewController.h; sourceTree = "<group>"; };
 		63F784CC1A1033ED001DC623 /* RecentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RecentViewController.m; path = ViewControllers/RecentViewController.m; sourceTree = "<group>"; };
 		63F784CE1A1038EC001DC623 /* Recents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Recents.h; path = Model/Recents.h; sourceTree = "<group>"; };
@@ -200,6 +203,8 @@
 				63294E241A46B7E8004BFCD6 /* EpisodeURLAsset.m */,
 				63294E261A46B915004BFCD6 /* EpisodePlayerItem.h */,
 				63294E271A46B915004BFCD6 /* EpisodePlayerItem.m */,
+				63233C3D1AD4CF74000DC74D /* NSURLConnection+KissAnime.h */,
+				63233C3E1AD4CF74000DC74D /* NSURLConnection+KissAnime.m */,
 			);
 			path = Anime;
 			sourceTree = "<group>";
@@ -436,6 +441,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				63F784D01A1038EC001DC623 /* Recents.m in Sources */,
+				63233C3F1AD4CF74000DC74D /* NSURLConnection+KissAnime.m in Sources */,
 				63F784801A0C87CD001DC623 /* AppDelegate.m in Sources */,
 				63F784CD1A1033ED001DC623 /* RecentViewController.m in Sources */,
 				63F784C51A100C84001DC623 /* Series.m in Sources */,

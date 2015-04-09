@@ -75,7 +75,7 @@ static SeriesStatus statusForStatusDescription(NSString *desc)
     
     NSURLRequest *req = [NSURLRequest requestWithURL:url];
     
-    [NSURLConnection sendAsynchronousRequest:req queue:[NSOperationQueue new] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+    [NSURLConnection sendAsynchronousKissAnimeRequest:req queue:[NSOperationQueue new] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
         
         NSString *str = [NSString stringWithContentsOfURL:url usedEncoding:nil error:nil];
         HTMLDocument *doc = [HTMLDocument documentWithString:str];
@@ -130,7 +130,7 @@ static SeriesStatus statusForStatusDescription(NSString *desc)
 {
     NSString *_url = [NSString stringWithFormat:@"http://kissanime.com/M/Anime/%@", seriesID];
     NSURL *url = [NSURL URLWithString:_url];
-    [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:url] queue:[NSOperationQueue new] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+    [NSURLConnection sendAsynchronousKissAnimeRequest:[NSURLRequest requestWithURL:url] queue:[NSOperationQueue new] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
         
         id doc = [HTMLDocument documentWithString:[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]];
         
@@ -158,7 +158,7 @@ static SeriesStatus statusForStatusDescription(NSString *desc)
     }
     
     NSURLRequest *req = [[NSURLRequest alloc] initWithURL:self.imageURL cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:7.0];
-    [NSURLConnection sendAsynchronousRequest:req queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+    [NSURLConnection sendAsynchronousKissAnimeRequest:req queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
        
         if (!data)
         {

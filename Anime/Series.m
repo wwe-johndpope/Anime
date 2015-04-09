@@ -98,7 +98,7 @@ static SeriesStatus statusForStatusDescription(NSString *desc)
     }
     
     //    NSString *genres = [[[contentNode nodesMatchingSelector:@"div"][3] firstNodeMatchingSelector:@"p"] textContent];
-    NSString *description = [[[contentNode childElementNodes][4] firstNodeMatchingSelector:@"p"] textContent];
+    NSString *description = [[[contentNode childElementNodes][6] firstNodeMatchingSelector:@"p"] textContent];
     
     NSMutableArray *episodes = [NSMutableArray new];
     

@@ -7,7 +7,7 @@
 //
 
 #import "CartoonHDSeriesRequest.h"
-#import "CartoonHDSeries.h"
+#import "CartoonHDSeries_Private.h"
 
 @interface CartoonHDSeriesRequest ()
 {
@@ -34,6 +34,13 @@
     return self;
 }
 
+#pragma mark - CartoonHDSeriesRequest
+
++(Class)cartoonHDSeriesClass
+{
+    return [CartoonHDSeries class];
+}
+
 #pragma mark - Public Methods
 
 +(instancetype)popularSeriesRequest { return nil; }
@@ -46,8 +53,8 @@
 }
 +(instancetype)searchSeriesRequestForQuery:(NSString *)query
 {
-    NSString * AnimationURL = @"http://gearscenter.com/cartoon_control/gapi-ios/index.php?op_select=catalog&os=ios&param_10=AIzaSyBsxsynyeeRczZJbxE8tZjnWl_3ALYmODs&param_7=1.0.0&param_8=com.gearsapp.cartoonhd&type_film=Animation";
-    CartoonHDSeriesRequest *req = [[self alloc] initWithURL:[NSURL URLWithString:AnimationURL]];
+    NSURL *categoriesURL = [[self cartoonHDSeriesClass] categoriesURL];
+    CartoonHDSeriesRequest *req = [[self alloc] initWithURL:categoriesURL];
     req.searchTerm = query;
     return req;
 }
@@ -75,7 +82,7 @@
         
         for (NSDictionary *cat in arr)
         {
-            CartoonHDSeries *series = [[CartoonHDSeries alloc] initWithJSON:cat];
+            CartoonHDSeries *series = [[[self.class cartoonHDSeriesClass] alloc] initWithJSON:cat];
             
             if ([series.seriesTitle.lowercaseString rangeOfString:self.searchTerm.lowercaseString].location != NSNotFound)
                 [results addObject:series];

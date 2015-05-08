@@ -10,4 +10,6 @@
 
 @interface CartoonHDSeriesRequest : SeriesRequest
 
++(Class)cartoonHDSeriesClass;
+
 @end

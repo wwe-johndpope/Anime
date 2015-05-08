@@ -11,6 +11,7 @@
 #import "HTMLReader.h"
 #import "Site.h"
 #import "Model/Sites/CartoonHD/CartoonHDSeries.h"
+#import "Model/Sites/CartoonHDMovie/CartoonHDMovieSeries.h"
 
 static NSString *descriptionForSeriesStatus(SeriesStatus s)
 {
@@ -151,6 +152,7 @@ static SeriesStatus statusForStatusDescription(NSString *desc)
     return @[
              [CartoonHDSeries class],
              [Series class],
+             [CartoonHDMovieSeries class],
              ];
 }
 
@@ -174,6 +176,8 @@ static SeriesStatus statusForStatusDescription(NSString *desc)
     }
     else
         seriesClass = self;
+    
+    NSAssert(seriesClass != nil, @"Unable to find suitable series class to handle quailified series ID: %@", seriesID);
     
     [seriesClass fetchSeriesWithID:sID completion:completion];
 }

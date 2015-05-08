@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 David Quesada. All rights reserved.
 //
 
-#import "CartoonHDSeries.h"
+#import "CartoonHDSeries_Private.h"
 #import "CartoonHDEpisode.h"
 
 @interface CartoonHDSeries()
@@ -81,7 +81,7 @@
 // stupidly load the entire catalog to find the series with the matching ID.
 +(void)fetchSeriesWithID:(NSString *)seriesID completion:(void (^)(Series *))completion
 {
-    NSURL *url = [NSURL URLWithString:@"http://gearscenter.com/cartoon_control/gapi-ios/index.php?op_select=catalog&os=ios&param_10=AIzaSyBsxsynyeeRczZJbxE8tZjnWl_3ALYmODs&param_7=1.0.0&param_8=com.gearsapp.cartoonhd&type_film=Animation"];
+    NSURL *url = [self categoriesURL];
     [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:url] queue:[NSOperationQueue new] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
         
         NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
@@ -101,12 +101,27 @@
                 break;
             }
         }
+        
+        if (completion)
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completion(nil);
+            });
     }];
 }
 
 +(NSString *)siteIdentifier
 {
     return @"cartoonhd.animation";
+}
+
++(NSURL *)categoriesURL
+{
+    static NSURL *url = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        url = [NSURL URLWithString:@"http://gearscenter.com/cartoon_control/gapi-ios/index.php?op_select=catalog&os=ios&param_10=AIzaSyBsxsynyeeRczZJbxE8tZjnWl_3ALYmODs&param_7=1.0.0&param_8=com.gearsapp.cartoonhd&type_film=Animation"];
+    });
+    return url;
 }
 
 @end

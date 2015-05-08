@@ -13,6 +13,7 @@
 #import "PlayerViewController.h"
 #import "CartoonHDSeriesRequest.h"
 #import "CartoonHDMovieSeriesRequest.h"
+#import "KissAnimeSeriesRequest.h"
 
 @interface SearchViewController ()<UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource>
 {
@@ -115,7 +116,7 @@
     reqs = @[
              [CartoonHDSeriesRequest searchSeriesRequestForQuery:searchBar.text],
              [CartoonHDMovieSeriesRequest searchSeriesRequestForQuery:searchBar.text],
-             [SeriesRequest searchSeriesRequestForQuery:searchBar.text],
+             [KissAnimeSeriesRequest searchSeriesRequestForQuery:searchBar.text],
              ];
     
     for (SeriesRequest *req in reqs)

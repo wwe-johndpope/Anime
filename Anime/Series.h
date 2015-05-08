@@ -28,16 +28,12 @@ typedef NS_ENUM(NSInteger, SeriesStatus)
 @property(readonly) NSString *seriesTitle;
 @property(readonly) NSString *seriesDescription;
 @property(readonly) NSString *seriesID; // e.g. Hunter-X-Hunter-2011
-@property(readonly) NSString *docpath;
 @property(readonly) NSURL *imageURL;
 
 @property(readonly) NSString *seriesStatusDescription;
 @property(readonly) SeriesStatus seriesStatus;
 
 @property(readonly) NSArray *episodes;
-
--(instancetype)initWithArticleElement:(HTMLElement *)elem;
--(instancetype)initWithSeriesDocument:(HTMLDocument *)doc;
 
 -(void)fetchEpisodes:(void (^)())completion;
 

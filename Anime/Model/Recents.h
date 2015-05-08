@@ -54,6 +54,4 @@ extern NSString * const RecentsWasChangedNotification;
 
 -(void)fetchThumbnailWithCompletion:(void (^)())completion;
 
--(Episode *)makeEpisode;
-
 @end

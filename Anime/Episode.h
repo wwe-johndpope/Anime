@@ -26,15 +26,12 @@ typedef NS_ENUM(NSInteger, StreamQuality)
 
 @interface Episode : NSObject
 
--(instancetype)initWithID:(NSString *)eID description:(NSString *)eDesc;
-
 @property(readonly) NSString *episodeID;
 @property(readonly) NSString *episodeDescription;
 
 
 #pragma mark - Stream URL Management
 
--(void)fetchVideoURLs:(void (^)(NSArray *urls))completion;
 -(void)fetchStreamURLs:(void (^)())completion;
 
 @property(readonly) NSArray *allStreamQualities;

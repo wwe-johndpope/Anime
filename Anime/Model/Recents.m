@@ -82,11 +82,6 @@ NSString * const RecentsWasChangedNotification = @"RecentsWasChangedNotification
     }];
 }
 
--(Episode *)makeEpisode
-{
-    return [[Episode alloc] initWithID:self.episodeID description:self.episodeTitle];
-}
-
 #pragma mark - Other Stuff
 
 +(void)writeImage:(UIImage *)image forThumbnailForSeriesID:(NSString *)seriesID

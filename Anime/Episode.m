@@ -7,103 +7,15 @@
 //
 
 #import "Episode.h"
-#import "HTMLReader.h"
-
-@interface Episode ()
-
-@end
+#import "Episode_Private.h"
 
 @implementation Episode
 
--(instancetype)initWithID:(NSString *)eID description:(NSString *)eDesc
-{
-    if ((self = [super init]))
-    {
-        _episodeID = eID;
-        _episodeDescription = eDesc;
-    }
-    return self;
-}
+#pragma mark - Stubs. To be overridden in subclasses.
 
--(StreamQuality)qualityForLinkText:(NSString *)text;
-{
-    NSString *orig = text;
-    
-    // 1920x1024.mp4
-    text = [text substringFromIndex:(1 + [text rangeOfString:@"x"].location)];
-    // 1024.mp4
-    text = [text substringToIndex:[text rangeOfString:@"."].location];
-    // 1024
-    
-    NSInteger height = [text integerValue];
-    
-    if (height <= 160)
-        return StreamQualityUnknown;
-    if (height <= 260)
-        return StreamQuality240;
-    if (height <= 500)
-        return StreamQuality360;
-    if (height <= 770)
-        return StreamQuality720;
-    
-    if (height > 1080)
-        NSLog(@"Super HD stream quality: %@", orig);
-    
-    return StreamQuality1080;
-}
+-(void)fetchStreamURLs:(void (^)())completion { }
 
--(void)fetchStreamURLs:(void (^)())completion
-{
-    NSURL *url = [NSURL URLWithString:@"http://kissanime.com/Mobile/GetEpisode"];
-    NSMutableURLRequest *req = [[NSMutableURLRequest alloc] initWithURL:url];
-    
-    
-    NSString *bodyString = [NSString stringWithFormat:@"eID=%@", self.episodeID];
-    req.HTTPMethod = @"POST";
-    req.HTTPBody = [bodyString dataUsingEncoding:NSUTF8StringEncoding];
-    
-    [NSURLConnection sendAsynchronousKissAnimeRequest:req queue:[NSOperationQueue new] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-        data = [[NSData alloc] initWithBase64EncodedData:data options:0];
-        NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-        
-        HTMLDocument *doc = [HTMLDocument documentWithString:string];
-        
-        id Links = [doc nodesMatchingSelector:@"a"];
-//        id LinkURLs = [[Links valueForKey:@"attributes"] valueForKey:@"href"];
-//        id LinkQualities = [Links valueForKey:@"textContent"];
-        
-        
-        NSMutableDictionary *dict = [NSMutableDictionary new];
-        NSMutableArray *allURLs = [NSMutableArray new];
-        
-        for (HTMLElement *link in Links)
-        {
-            id urlString = link.attributes[@"href"];
-            id url = [NSURL URLWithString:urlString];
-            id text = link.textContent;
-            
-            [allURLs addObject:url];
-            
-            StreamQuality qual = [self qualityForLinkText:text];
-            dict[@(qual)] = url;
-        }
-        
-        _urlsByVideoQuality = dict.copy;
-        _allStreamURLs = allURLs.copy;
-        _allStreamQualities = [dict.allKeys sortedArrayUsingSelector:@selector(compare:)];
-        
-        if (completion)
-            dispatch_async(dispatch_get_main_queue(), completion);
-    }];
-}
-
--(void)fetchVideoURLs:(void (^)(NSArray *))completion
-{
-    [self fetchStreamURLs:^{
-        if (completion)
-            completion(self.allStreamURLs);
-    }];
-}
+#pragma mark - Default implementations
 
 -(NSURL *)streamURLForVideoQuality:(StreamQuality)quality
 {
@@ -112,7 +24,7 @@
 
 -(NSURL *)streamURLOfMaximumQuality:(StreamQuality)quality actualQuality:(StreamQuality *)actualQuality
 {
-    for (NSNumber *num in self.allStreamQualities.reverseObjectEnumerator.allObjects)
+    for (NSNumber *num in self.allStreamQualities.reverseObjectEnumerator)
     {
         if (num.integerValue <= (NSInteger)quality)
         {
@@ -123,8 +35,8 @@
     }
     
     if (actualQuality)
-        *actualQuality = StreamQualityMinUsed;
-    return self.allStreamURLs.lastObject;
+        *actualQuality = (StreamQuality)[self.allStreamQualities.firstObject integerValue];
+    return self.allStreamURLs.firstObject;
 }
 
 -(NSURL *)streamURLOfMaximumQuality:(StreamQuality)quality
@@ -134,8 +46,41 @@
 
 -(NSURL *)streamURLOfMinimumQuality:(StreamQuality)quality
 {
-    // Makes the assumption that the site always puts the higher quality streams first.
-    return self.allStreamURLs.firstObject;
+    return self.allStreamURLs.lastObject;
+}
+
+-(NSURL *)highestQualityStream
+{
+    return self.allStreamURLs.lastObject;
+}
+
+#pragma mark - Private
+
++(StreamQuality)_qualityForVideoHeight:(NSInteger)val
+{
+    if (val <= 160)
+        return StreamQualityUnknown;
+    if (val <= 260)
+        return StreamQuality240;
+    if (val <= 500)
+        return StreamQuality360;
+    if (val <= 770)
+        return StreamQuality720;
+    
+    if (val > 1080)
+        NSLog(@"Super HD stream quality: %d", val);
+    
+    return StreamQuality1080;
+}
+
+// Sets the lists of video streams and qualities. The qualities will be sorted in ascending order.
+-(void)_setVideoStreams:(NSArray *)urls forQualities:(NSArray *)qualities
+{
+    NSDictionary *dict = [NSDictionary dictionaryWithObjects:urls forKeys:qualities];
+    
+    _urlsByVideoQuality = dict;
+    _allStreamQualities = [dict.allKeys sortedArrayUsingSelector:@selector(compare:)];
+    _allStreamURLs = [dict objectsForKeys:_allStreamQualities notFoundMarker:[NSNull null]];
 }
 
 @end

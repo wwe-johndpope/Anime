@@ -7,8 +7,6 @@
 //
 
 #import "SeriesRequest.h"
-#import "Series.h"
-#import "HTMLReader.h"
 
 NSArray *allSeriesGenres()
 {
@@ -129,151 +127,15 @@ NSString *seriesGenreDescription(SeriesGenre genre)
     return nil;
 }
 
-@interface SeriesRequest ()
-{
-    BOOL _isLoadingFirstPage;
-}
-@property(readonly) NSString *sortParam;
-@property(readonly) NSString *keyParam;
--(instancetype)initWithSort:(NSString *)sort key:(NSString *)key;
--(NSURLRequest *)selectNetworkRequest;
--(NSURLRequest *)_firstPageNetworkRequest;
--(NSURLRequest *)_nextPageNetworkRequest;
--(NSInteger)_loadedSeriesCount;
--(NSString *)_paramString:(BOOL)includeID;
--(NSArray *)_seriesForResponseData:(NSData *)data;
-@end
-
 @implementation SeriesRequest
 
-#pragma mark - Public methods
++(instancetype)recentSeriesRequest { return nil; }
++(instancetype)searchSeriesRequestForQuery:(NSString *)query { return nil; }
++(instancetype)popularSeriesRequest { return nil; }
++(instancetype)ongoingSeriesRequest { return nil; }
++(instancetype)seriesRequestForGenre:(SeriesGenre)genre { return nil; }
 
--(void)loadPageOfSeries:(void (^)(NSArray *))completion
-{
-    NSURLRequest *req = [self selectNetworkRequest];
-    [NSURLConnection sendAsynchronousKissAnimeRequest:req queue:[NSOperationQueue new] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-        
-        _isLoadingFirstPage = NO;
-        NSArray *hits = [self _seriesForResponseData:data];
-        
-        if (_allSeries)
-            _allSeries = [_allSeries arrayByAddingObjectsFromArray:hits];
-        else
-            _allSeries = hits; // or hits.copy?
-        
-        if (completion)
-            dispatch_async(dispatch_get_main_queue(), ^{
-                completion(hits);
-            });
-        
-    }];
-}
-
-#pragma mark - Class methods
-
-+(instancetype)recentSeriesRequest
-{
-    return [[SeriesRequest alloc] initWithSort:@"latestupdate" key:nil];
-}
-
-+(instancetype)searchSeriesRequestForQuery:(NSString *)query
-{
-    return [[SeriesRequest alloc] initWithSort:@"search" key:query];
-}
-
-+(instancetype)popularSeriesRequest
-{
-    return [[SeriesRequest alloc] initWithSort:@"popular" key:nil];
-}
-
-+(instancetype)ongoingSeriesRequest
-{
-    return [[SeriesRequest alloc] initWithSort:@"ongoing" key:nil];
-}
-
-+(instancetype)seriesRequestForGenre:(SeriesGenre)genre
-{
-    return [[SeriesRequest alloc] initWithSort:@"genre" key:seriesGenreDescription(genre)];
-}
-
-#pragma Private Implementation
-
--(instancetype)initWithSort:(NSString *)sort key:(NSString *)key
-{
-    if ((self = [super init]))
-    {
-        _hasMoreAvailable = YES;
-        _sortParam = sort;
-        
-        _keyParam = (__bridge_transfer NSString *)CFURLCreateStringByAddingPercentEscapes(
-                                                                                          NULL,
-                                                                                          (CFStringRef)key,
-                                                                                          NULL,
-                                                                                          (CFStringRef)@"!*'();:@&=+$,/?%#[]",
-                                                                                          kCFStringEncodingUTF8 );
-        _isLoadingFirstPage = YES;
-    }
-    return self;
-}
-
--(NSURLRequest *)selectNetworkRequest
-{
-    if (_isLoadingFirstPage)
-        return [self _firstPageNetworkRequest];
-    return [self _nextPageNetworkRequest];
-}
-
--(NSURLRequest *)_firstPageNetworkRequest
-{
-    NSString *urlString = [NSString stringWithFormat:@"http://kissanime.com/M?%@", [self _paramString:NO]];
-    NSURL *url = [NSURL URLWithString:urlString];
-    NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:url];
-    req.HTTPMethod = @"GET";
-    
-    return req;
-}
-
--(NSURLRequest *)_nextPageNetworkRequest
-{
-    NSString *urlString = @"http://kissanime.com/Mobile/GetNextUpdateAnime";
-    NSURL *url = [NSURL URLWithString:urlString];
-    NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:url];
-    req.HTTPMethod = @"POST";
-    req.HTTPBody = [[self _paramString:YES] dataUsingEncoding:NSUTF8StringEncoding];
-    
-    return req;
-}
-
--(NSString *)_paramString:(BOOL)includeID
-{
-    NSMutableString *params = [NSMutableString new];
-    
-    if (includeID)
-        [params appendFormat:@"id=%d&", (int)[self _loadedSeriesCount]];
-    
-    if (_sortParam)
-        [params appendFormat:@"sort=%@&", _sortParam];
-    
-    if (_keyParam)
-        [params appendFormat:@"key=%@", _keyParam];
-    
-    return params;
-}
-
--(NSArray *)_seriesForResponseData:(NSData *)data
-{
-    HTMLDocument *doc = [HTMLDocument documentWithString:[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]];
-    NSMutableArray *series = [NSMutableArray new];
-    
-    for (HTMLElement *article in [doc nodesMatchingSelector:@"article"])
-        [series addObject:[[Series alloc] initWithArticleElement:article]];
-    
-    return [series copy];
-}
-
--(NSInteger)_loadedSeriesCount
-{
-    return _allSeries.count;
-}
+-(void)loadPageOfSeries:(void (^)(NSArray *nextPage))completion { }
 
 @end
+

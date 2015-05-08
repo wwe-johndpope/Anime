@@ -7,45 +7,25 @@
 //
 
 #import "CartoonHDEpisode.h"
+#import "Episode_Private.h"
 
 @interface CartoonHDEpisode ()
 {
     NSString *_episodeID;
     NSString *_episodeDescription;
-    
-    NSArray *_allStreamQualities;
-    NSArray *_allStreamURLs;
-    NSDictionary *_urlsByVideoQuality;
 }
 
 @end
 
 @implementation CartoonHDEpisode
 
-@synthesize episodeID=_episodeID, episodeDescription=_episodeDescription, allStreamQualities=_allStreamQualities, allStreamURLs=_allStreamURLs, urlsByVideoQuality=_urlsByVideoQuality;
+@synthesize episodeID=_episodeID, episodeDescription=_episodeDescription;
 
 -(instancetype)initWithJSON:(NSDictionary *)json
 {
     if ((self = [super init]))
         [self _setJSON:json];
     return self;
-}
-
--(StreamQuality)_qualityForInteger:(NSInteger)val
-{
-    if (val <= 160)
-        return StreamQualityUnknown;
-    if (val <= 260)
-        return StreamQuality240;
-    if (val <= 500)
-        return StreamQuality360;
-    if (val <= 770)
-        return StreamQuality720;
-    
-    if (val > 1080)
-        NSLog(@"Super HD stream quality: %d", val);
-    
-    return StreamQuality1080;
 }
 
 -(void)_setJSON:(NSDictionary *)json
@@ -60,21 +40,16 @@
     
     NSMutableArray *urls = [NSMutableArray new];
     NSMutableArray *qualities = [NSMutableArray new];
-    NSMutableDictionary *dict = [NSMutableDictionary new];
     
     // Subtract 1 from the length because the string ends in an extra #,
     // which means there's an empty string at the end of the array.
     for (int i = 0; i < parts.count - 1; i += 2)
     {
         [urls addObject:[NSURL URLWithString:parts[i]]];
-        [qualities addObject:@([self _qualityForInteger:[parts[i+1] integerValue]])];
-        
-        dict[qualities.lastObject] = urls.lastObject;
+        [qualities addObject:@([self.class _qualityForVideoHeight:[parts[i+1] integerValue]])];
     }
 
-    _allStreamURLs = urls.copy;
-    _allStreamQualities = qualities.copy;
-    _urlsByVideoQuality = dict.copy;
+    [self _setVideoStreams:urls.copy forQualities:qualities.copy];
 }
 
 -(void)fetchStreamURLs:(void (^)())completion

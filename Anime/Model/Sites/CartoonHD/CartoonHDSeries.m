@@ -14,7 +14,6 @@
     NSString *_seriesTitle;
     NSString *_seriesDescription;
     NSString *_seriesID;
-    NSString *_docpath;
     NSURL *_imageURL;
     
     NSArray *_episodes;
@@ -24,7 +23,7 @@
 
 @implementation CartoonHDSeries
 
-@synthesize seriesTitle=_seriesTitle, seriesDescription=_seriesDescription, seriesID = _seriesID, docpath=_docpath, imageURL=_imageURL, episodes=_episodes;
+@synthesize seriesTitle=_seriesTitle, seriesDescription=_seriesDescription, seriesID = _seriesID, imageURL=_imageURL, episodes=_episodes;
 
 -(instancetype)initWithJSON:(NSDictionary *)json
 {

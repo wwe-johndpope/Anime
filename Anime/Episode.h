@@ -39,6 +39,7 @@ typedef NS_ENUM(NSInteger, StreamQuality)
 
 @property(readonly) NSArray *allStreamQualities;
 @property(readonly) NSArray *allStreamURLs;
+@property(readonly) NSDictionary *urlsByVideoQuality;
 
 -(NSURL *)streamURLForVideoQuality:(StreamQuality)quality;
 -(NSURL *)streamURLOfMaximumQuality:(StreamQuality)quality;

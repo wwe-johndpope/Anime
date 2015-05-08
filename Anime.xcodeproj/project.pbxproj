@@ -13,6 +13,10 @@
 		63669F041A10858D00739484 /* SearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 63669F031A10858D00739484 /* SearchViewController.m */; };
 		63669F0C1A10B2DF00739484 /* DataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 63669F0B1A10B2DF00739484 /* DataStore.m */; };
 		63669F0F1A11588400739484 /* AnimePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 63669F0E1A11588400739484 /* AnimePlayer.m */; };
+		636D81901AD63FAC00FCE205 /* Site.m in Sources */ = {isa = PBXBuildFile; fileRef = 636D818F1AD63FAC00FCE205 /* Site.m */; };
+		636D81951AD6409200FCE205 /* CartoonHDSeriesRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 636D81941AD6409200FCE205 /* CartoonHDSeriesRequest.m */; };
+		636D819B1AD642BD00FCE205 /* CartoonHDSeries.m in Sources */ = {isa = PBXBuildFile; fileRef = 636D819A1AD642BD00FCE205 /* CartoonHDSeries.m */; };
+		636D819E1AD64A3700FCE205 /* CartoonHDEpisode.m in Sources */ = {isa = PBXBuildFile; fileRef = 636D819D1AD64A3700FCE205 /* CartoonHDEpisode.m */; };
 		639F76A41A15FC220000A0CA /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 639F76A31A15FC220000A0CA /* Settings.bundle */; };
 		63F7847D1A0C87CD001DC623 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 63F7847C1A0C87CD001DC623 /* main.m */; };
 		63F784801A0C87CD001DC623 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 63F7847F1A0C87CD001DC623 /* AppDelegate.m */; };
@@ -109,6 +113,14 @@
 		63669F0B1A10B2DF00739484 /* DataStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DataStore.m; path = Model/DataStore.m; sourceTree = "<group>"; };
 		63669F0D1A11588400739484 /* AnimePlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnimePlayer.h; sourceTree = "<group>"; };
 		63669F0E1A11588400739484 /* AnimePlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnimePlayer.m; sourceTree = "<group>"; };
+		636D818E1AD63FAC00FCE205 /* Site.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Site.h; path = Model/Site.h; sourceTree = "<group>"; };
+		636D818F1AD63FAC00FCE205 /* Site.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Site.m; path = Model/Site.m; sourceTree = "<group>"; };
+		636D81931AD6409200FCE205 /* CartoonHDSeriesRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CartoonHDSeriesRequest.h; path = Model/Sites/CartoonHD/CartoonHDSeriesRequest.h; sourceTree = "<group>"; };
+		636D81941AD6409200FCE205 /* CartoonHDSeriesRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CartoonHDSeriesRequest.m; path = Model/Sites/CartoonHD/CartoonHDSeriesRequest.m; sourceTree = "<group>"; };
+		636D81991AD642BD00FCE205 /* CartoonHDSeries.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CartoonHDSeries.h; path = Model/Sites/CartoonHD/CartoonHDSeries.h; sourceTree = "<group>"; };
+		636D819A1AD642BD00FCE205 /* CartoonHDSeries.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CartoonHDSeries.m; path = Model/Sites/CartoonHD/CartoonHDSeries.m; sourceTree = "<group>"; };
+		636D819C1AD64A3700FCE205 /* CartoonHDEpisode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CartoonHDEpisode.h; path = Model/Sites/CartoonHD/CartoonHDEpisode.h; sourceTree = "<group>"; };
+		636D819D1AD64A3700FCE205 /* CartoonHDEpisode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CartoonHDEpisode.m; path = Model/Sites/CartoonHD/CartoonHDEpisode.m; sourceTree = "<group>"; };
 		639F76A31A15FC220000A0CA /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		63F784771A0C87CD001DC623 /* Anime.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Anime.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		63F7847B1A0C87CD001DC623 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -158,6 +170,27 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		636D81911AD6401800FCE205 /* Sites */ = {
+			isa = PBXGroup;
+			children = (
+				636D81921AD6404400FCE205 /* CartoonHD */,
+			);
+			name = Sites;
+			sourceTree = "<group>";
+		};
+		636D81921AD6404400FCE205 /* CartoonHD */ = {
+			isa = PBXGroup;
+			children = (
+				636D81931AD6409200FCE205 /* CartoonHDSeriesRequest.h */,
+				636D81941AD6409200FCE205 /* CartoonHDSeriesRequest.m */,
+				636D81991AD642BD00FCE205 /* CartoonHDSeries.h */,
+				636D819A1AD642BD00FCE205 /* CartoonHDSeries.m */,
+				636D819C1AD64A3700FCE205 /* CartoonHDEpisode.h */,
+				636D819D1AD64A3700FCE205 /* CartoonHDEpisode.m */,
+			);
+			name = CartoonHD;
+			sourceTree = "<group>";
+		};
 		63F7846E1A0C87CD001DC623 = {
 			isa = PBXGroup;
 			children = (
@@ -253,12 +286,15 @@
 		63F784C61A100EF2001DC623 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				636D81911AD6401800FCE205 /* Sites */,
 				63F784C71A100F22001DC623 /* SeriesRequest.h */,
 				63F784C81A100F22001DC623 /* SeriesRequest.m */,
 				63F784CE1A1038EC001DC623 /* Recents.h */,
 				63F784CF1A1038EC001DC623 /* Recents.m */,
 				63669F0A1A10B2DF00739484 /* DataStore.h */,
 				63669F0B1A10B2DF00739484 /* DataStore.m */,
+				636D818E1AD63FAC00FCE205 /* Site.h */,
+				636D818F1AD63FAC00FCE205 /* Site.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -444,16 +480,20 @@
 				63233C3F1AD4CF74000DC74D /* NSURLConnection+KissAnime.m in Sources */,
 				63F784801A0C87CD001DC623 /* AppDelegate.m in Sources */,
 				63F784CD1A1033ED001DC623 /* RecentViewController.m in Sources */,
+				636D81951AD6409200FCE205 /* CartoonHDSeriesRequest.m in Sources */,
 				63F784C51A100C84001DC623 /* Series.m in Sources */,
 				63669F0C1A10B2DF00739484 /* DataStore.m in Sources */,
+				636D81901AD63FAC00FCE205 /* Site.m in Sources */,
 				63294E281A46B915004BFCD6 /* EpisodePlayerItem.m in Sources */,
 				63669F0F1A11588400739484 /* AnimePlayer.m in Sources */,
 				63F7847D1A0C87CD001DC623 /* main.m in Sources */,
+				636D819B1AD642BD00FCE205 /* CartoonHDSeries.m in Sources */,
 				63F784C21A0FF644001DC623 /* Episode.m in Sources */,
 				63F784BC1A0F3814001DC623 /* SeriesViewController.m in Sources */,
 				63669F041A10858D00739484 /* SearchViewController.m in Sources */,
 				63F784C91A100F22001DC623 /* SeriesRequest.m in Sources */,
 				63294E251A46B7E8004BFCD6 /* EpisodeURLAsset.m in Sources */,
+				636D819E1AD64A3700FCE205 /* CartoonHDEpisode.m in Sources */,
 				63F784BF1A0FEB04001DC623 /* PlayerViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

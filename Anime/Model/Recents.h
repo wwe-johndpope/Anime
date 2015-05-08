@@ -44,7 +44,7 @@ extern NSString * const RecentsWasChangedNotification;
 // A lightweight
 @interface RecentWatch : NSObject
 
-@property(readonly) NSString *seriesID;
+@property(readonly) NSString *seriesID;    // Qualified series ID
 @property(readonly) NSString *seriesTitle;
 @property(readonly) NSString *episodeID;
 @property(readonly) NSString *episodeTitle;

@@ -9,6 +9,8 @@
 #import "Series.h"
 #import "Episode.h"
 #import "HTMLReader.h"
+#import "Site.h"
+#import "Model/Sites/CartoonHD/CartoonHDSeries.h"
 
 static NSString *descriptionForSeriesStatus(SeriesStatus s)
 {
@@ -144,6 +146,38 @@ static SeriesStatus statusForStatusDescription(NSString *desc)
     }];
 }
 
++(NSArray *)seriesLookupClasses
+{
+    return @[
+             [CartoonHDSeries class],
+             [Series class],
+             ];
+}
+
++(void)fetchSeriesWithQualifiedID:(NSString *)seriesID completion:(void (^)(Series *))completion
+{
+    NSString *site = [Site siteForQualifiedSeriesID:seriesID];
+    NSString *sID = [Site seriesIDForQualifiedSeriesID:seriesID];
+    
+    Class seriesClass = Nil;
+    
+    if (site)
+    {
+        for (Class candidateClass in [self seriesLookupClasses])
+        {
+            if ([[candidateClass siteIdentifier] isEqualToString:site])
+            {
+                seriesClass = candidateClass;
+                break;
+            }
+        }
+    }
+    else
+        seriesClass = self;
+    
+    [seriesClass fetchSeriesWithID:sID completion:completion];
+}
+
 -(void)fetchImage:(void (^)(BOOL, NSError *))completion
 {
     if (!completion)
@@ -177,6 +211,22 @@ static SeriesStatus statusForStatusDescription(NSString *desc)
         _seriesImage = img;
         completion(YES, nil);
     }];
+}
+
+-(NSString *)qualifiedSeriesID
+{
+    NSString *series = self.seriesID;
+    NSString *site = [self.class siteIdentifier];
+    
+    if (!site.length)
+        return series;
+    
+    return [Site qualifiedIDForSeriesID:series inSite:site];
+}
+
++(NSString *)siteIdentifier
+{
+    return @"kissanime.mobile";
 }
 
 @end

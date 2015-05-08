@@ -23,6 +23,7 @@ typedef NS_ENUM(NSInteger, SeriesStatus)
 @interface Series : NSObject
 
 +(void)fetchSeriesWithID:(NSString *)seriesID completion:(void (^)(Series *series))completion;
++(void)fetchSeriesWithQualifiedID:(NSString *)seriesID completion:(void (^)(Series *series))completion;
 
 @property(readonly) NSString *seriesTitle;
 @property(readonly) NSString *seriesDescription;
@@ -46,5 +47,8 @@ typedef NS_ENUM(NSInteger, SeriesStatus)
 @property(readonly) UIImage *seriesImage;
 -(void)fetchImage:(void (^)(BOOL success, NSError *error))completion;
 #endif
+
+@property(readonly) NSString *qualifiedSeriesID;
++(NSString *)siteIdentifier;
 
 @end

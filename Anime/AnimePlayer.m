@@ -143,7 +143,7 @@
 
 -(void)setWatch:(RecentWatch *)watch
 {
-    [Series fetchSeriesWithID:watch.seriesID completion:^(Series *series) {
+    [Series fetchSeriesWithQualifiedID:watch.seriesID completion:^(Series *series) {
         
         _series = series;
         id _id = watch.episodeID;

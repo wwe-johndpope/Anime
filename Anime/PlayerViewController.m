@@ -136,7 +136,7 @@
     if ((self = [self init]))
     {
         // Ugly.
-        [Series fetchSeriesWithID:watch.seriesID completion:^(Series *sr) {
+        [Series fetchSeriesWithQualifiedID:watch.seriesID completion:^(Series *sr) {
             
             _series = sr;
             

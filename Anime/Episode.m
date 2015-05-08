@@ -10,9 +10,6 @@
 #import "HTMLReader.h"
 
 @interface Episode ()
-{
-    NSDictionary *_urlsByVideoQuality;
-}
 
 @end
 
@@ -104,30 +101,30 @@
 {
     [self fetchStreamURLs:^{
         if (completion)
-            completion(_allStreamURLs);
+            completion(self.allStreamURLs);
     }];
 }
 
 -(NSURL *)streamURLForVideoQuality:(StreamQuality)quality
 {
-    return _urlsByVideoQuality[@(quality)];
+    return self.urlsByVideoQuality[@(quality)];
 }
 
 -(NSURL *)streamURLOfMaximumQuality:(StreamQuality)quality actualQuality:(StreamQuality *)actualQuality
 {
-    for (NSNumber *num in _allStreamQualities.reverseObjectEnumerator.allObjects)
+    for (NSNumber *num in self.allStreamQualities.reverseObjectEnumerator.allObjects)
     {
         if (num.integerValue <= (NSInteger)quality)
         {
             if (actualQuality)
                 *actualQuality = (StreamQuality)num.integerValue;
-            return _urlsByVideoQuality[num];
+            return self.urlsByVideoQuality[num];
         }
     }
     
     if (actualQuality)
         *actualQuality = StreamQualityMinUsed;
-    return _allStreamURLs.lastObject;
+    return self.allStreamURLs.lastObject;
 }
 
 -(NSURL *)streamURLOfMaximumQuality:(StreamQuality)quality
@@ -138,7 +135,7 @@
 -(NSURL *)streamURLOfMinimumQuality:(StreamQuality)quality
 {
     // Makes the assumption that the site always puts the higher quality streams first.
-    return _allStreamURLs.firstObject;
+    return self.allStreamURLs.firstObject;
 }
 
 @end

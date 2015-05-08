@@ -11,11 +11,12 @@
 #import "SeriesRequest.h"
 #import "SeriesViewController.h"
 #import "PlayerViewController.h"
+#import "CartoonHDSeriesRequest.h"
 
 @interface SearchViewController ()<UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource>
 {
     BOOL hasAppeared;
-    SeriesRequest *req;
+    NSArray *reqs;
 }
 @property IBOutlet UISearchBar *bar;
 @property IBOutlet UINavigationBar *navBar;
@@ -107,17 +108,30 @@
 {
     [searchBar resignFirstResponder];
     
-    req = [SeriesRequest searchSeriesRequestForQuery:searchBar.text];
+//    req = [SeriesRequest searchSeriesRequestForQuery:searchBar.text];
+//    req = [CartoonHDSeriesRequest searchSeriesRequestForQuery:searchBar.text];
     
-    [req loadPageOfSeries:^(NSArray *nextPage) {
-        [self.tableView reloadData];
-    }];
+    reqs = @[
+             [CartoonHDSeriesRequest searchSeriesRequestForQuery:searchBar.text],
+             [SeriesRequest searchSeriesRequestForQuery:searchBar.text],
+             ];
+    
+    for (SeriesRequest *req in reqs)
+        [req loadPageOfSeries:^(NSArray *nextPage) {
+            [self.tableView reloadData];
+        }];
+}
+
+-(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    return [[reqs[section] class] description];
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"seriesCell"];
     
+    SeriesRequest *req = reqs[indexPath.section];
     Series *s = req.allSeries[indexPath.row];
     
     cell.textLabel.text = s.seriesTitle;
@@ -128,13 +142,20 @@
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+    SeriesRequest *req = reqs[section];
     return req.allSeries.count;
+}
+
+-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return reqs.count;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
+    SeriesRequest *req = reqs[indexPath.section];
     Series *s = req.allSeries[indexPath.row];
 
     

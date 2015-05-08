@@ -166,7 +166,7 @@
             NSIndexPath *ip = [self.tableView indexPathForCell:sender];
             RecentWatch *w = [[Recents defaultRecentStore] watches][ip.row];
             
-            [Series fetchSeriesWithID:w.seriesID completion:^(Series *series) {
+            [Series fetchSeriesWithQualifiedID:w.seriesID completion:^(Series *series) {
                 dest.series = series;
             }];
         }

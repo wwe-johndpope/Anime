@@ -174,7 +174,7 @@ NSString * const RecentsWasChangedNotification = @"RecentsWasChangedNotification
     for (NSUInteger idx = 0; idx < arr.count; idx++)
     {
         RecentWatch *watch = arr[idx];
-        if ([watch.seriesID isEqualToString:series.seriesID])
+        if ([watch.seriesID isEqualToString:series.qualifiedSeriesID])
         {
             target = watch;
             [arr removeObjectAtIndex:idx];
@@ -185,7 +185,7 @@ NSString * const RecentsWasChangedNotification = @"RecentsWasChangedNotification
     if (!target)
     {
         target = [RecentWatch new];
-        target.seriesID = series.seriesID;
+        target.seriesID = series.qualifiedSeriesID;
         target.seriesTitle = series.seriesTitle;
     }
     
@@ -201,7 +201,7 @@ NSString * const RecentsWasChangedNotification = @"RecentsWasChangedNotification
     for (NSUInteger idx = 0; idx < _watches.count; idx++)
     {
         RecentWatch *watch = _watches[idx];
-        if ([watch.seriesID isEqualToString:series.seriesID])
+        if ([watch.seriesID isEqualToString:series.qualifiedSeriesID])
         {
             return watch;
         }

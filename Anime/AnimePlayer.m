@@ -27,6 +27,7 @@
 }
 +(void)playerDidPlayToEnd:(NSNotification *)note;
 +(StreamQuality)defaultStreamQuality;
+-(StreamQuality)_effectiveStreamQuality;
 @end
 
 @implementation AnimePlayer
@@ -115,7 +116,7 @@
     Episode *ep = [_episodeQueue firstObject];
     [_episodeQueue removeObjectAtIndex:0];
     
-    StreamQuality q = [self.class defaultStreamQuality];
+    StreamQuality q = [self _effectiveStreamQuality];
     [ep fetchStreamURLs:^{
   
         EpisodePlayerItem *item = [[EpisodePlayerItem alloc] initWithEpisode:ep inSeries:_series desiredQuality:q];
@@ -188,6 +189,13 @@
             [self addNumberOfItemsToPlayerQueue:2];
         }];
     }];
+}
+
+-(StreamQuality)_effectiveStreamQuality
+{
+    if (_preferredStreamQuality == StreamQualityUnknown)
+        return [self.class defaultStreamQuality];
+    return _preferredStreamQuality;
 }
 
 @end

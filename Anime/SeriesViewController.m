@@ -13,7 +13,7 @@
 #import "Series.h"
 #import "Recents.h"
 
-@interface SeriesViewController ()<UIGestureRecognizerDelegate>
+@interface SeriesViewController ()<UIGestureRecognizerDelegate, UIActionSheetDelegate>
 {
     Series *_series;
     BOOL _needReloadSeriesOnViewDidLoad;
@@ -36,6 +36,9 @@
     UIView *_snapshotView;
     
     UITapGestureRecognizer *_tapGesture;
+    UILongPressGestureRecognizer *_longPressGesture;
+    
+    Episode *_actionSheetEpisode;
 }
 
 @property IBOutlet UIImageView *posterImageView;
@@ -100,6 +103,9 @@
         self.series = self.series;
         _needReloadSeriesOnViewDidLoad = NO;
     }
+    
+    _longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPress:)];
+    [self.tableView addGestureRecognizer:_longPressGesture];
 }
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
@@ -339,6 +345,39 @@
     return _series;
 }
 
+-(void)longPress:(UILongPressGestureRecognizer *)sender
+{
+    if (sender.state != UIGestureRecognizerStateBegan)
+        return;
+    
+    CGPoint point = [sender locationInView:self.tableView];
+    NSIndexPath *idx = [self.tableView indexPathForRowAtPoint:point];
+    
+    // Ignore cells under the header view.
+    if (CGRectContainsPoint(sectionHeader.frame, point))
+        return;
+    
+    Episode *ep = [self _episodeAtIndexPath:idx];
+    [ep fetchStreamURLs:^{
+        _actionSheetEpisode = ep;
+        
+        UIActionSheet *sheet = [[UIActionSheet alloc] init];
+        sheet.title = ep.episodeDescription;
+        
+        for (NSNumber *quality in ep.allStreamQualities)
+            [sheet addButtonWithTitle:StreamQualityDescription((StreamQuality)quality.integerValue)];
+        
+        [sheet setCancelButtonIndex:[sheet addButtonWithTitle:@"Cancel"]];
+        sheet.delegate = self;
+        
+        UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:idx];
+        CGRect rect;
+        rect.size = CGSizeMake(1, 1);
+        rect.origin = [sender locationInView:cell];
+        [sheet showFromRect:rect inView:cell animated:YES];
+    }];
+}
+
 -(void)setSeries:(Series *)series
 {
     _series = series;
@@ -369,6 +408,38 @@
         [self.tableView reloadData];
     }
 }
+
+// Use StreamQualityUnknown to play at the user-selected default quality.
+-(void)showEpisode:(Episode *)ep withQuality:(StreamQuality)quality
+{
+    PlayerViewController *player = [[PlayerViewController alloc] initWithSeries:self.series episode:ep];
+
+    player.preferredStreamQuality = quality;
+    
+    //    self.modalPresentationCapturesStatusBarAppearance = YES;
+    [self presentViewController:player animated:YES completion:^{
+        //        [self.tableView scrollRectToVisible:CGRectMake(0, 0, .5, .5) animated:NO];
+        //        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+        //        [UIApplication sharedApplication].statusBarHidden = YES;
+    }];
+    
+}
+
+#pragma mark - UIActionSheetDelegate
+
+-(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == actionSheet.cancelButtonIndex)
+        return;
+    
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        StreamQuality q = (StreamQuality)[_actionSheetEpisode.allStreamQualities[buttonIndex] integerValue];
+        [self showEpisode:_actionSheetEpisode withQuality:q];
+        _actionSheetEpisode = nil;
+    }];
+}
+
+#pragma mark - UITableViewDataSource / Delegate
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -402,15 +473,7 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     Episode *ep = [self _episodeAtIndexPath:indexPath];
-    PlayerViewController *player = [[PlayerViewController alloc] initWithSeries:self.series episode:ep];
-    
-//    self.modalPresentationCapturesStatusBarAppearance = YES;
-    [self presentViewController:player animated:YES completion:^{
-//        [self.tableView scrollRectToVisible:CGRectMake(0, 0, .5, .5) animated:NO];
-//        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
-//        [UIApplication sharedApplication].statusBarHidden = YES;
-    }];
-    
+    [self showEpisode:ep withQuality:StreamQualityUnknown];
 }
 
 -(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath

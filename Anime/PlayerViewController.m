@@ -25,6 +25,7 @@
 {
     Series *_series;
     Episode *_currentEpisode;
+    StreamQuality _preferredStreamQuality;
     
     UILabel *thing;
 }
@@ -188,6 +189,25 @@
     
     [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
     [[AVAudioSession sharedInstance] setActive:YES error:nil];
+}
+
+-(void)setPlayer:(AnimePlayer *)player
+{
+    if (player)
+        player.preferredStreamQuality = self.preferredStreamQuality;
+    [super setPlayer:player];
+}
+
+-(StreamQuality)preferredStreamQuality
+{
+    return _preferredStreamQuality;
+}
+
+-(void)setPreferredStreamQuality:(StreamQuality)preferredStreamQuality
+{
+    _preferredStreamQuality = preferredStreamQuality;
+    if (self.player)
+        ((AnimePlayer *)self.player).preferredStreamQuality = preferredStreamQuality;
 }
 
 #pragma mark - AnimePlayerDelegate

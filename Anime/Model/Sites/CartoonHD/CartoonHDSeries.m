@@ -98,7 +98,7 @@
                             completion(series);
                         });
                 }];
-                break;
+                return;
             }
         }
         

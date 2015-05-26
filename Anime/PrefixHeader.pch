@@ -12,3 +12,4 @@
 
 //#import <HTMLReader/HTMLReader.h>
 #import <MediaPlayer/MediaPlayer.h>
+#import "NSURLConnection+KissAnime.h"

@@ -151,7 +151,7 @@ NSString *seriesGenreDescription(SeriesGenre genre)
 -(void)loadPageOfSeries:(void (^)(NSArray *))completion
 {
     NSURLRequest *req = [self selectNetworkRequest];
-    [NSURLConnection sendAsynchronousRequest:req queue:[NSOperationQueue new] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+    [NSURLConnection sendAsynchronousKissAnimeRequest:req queue:[NSOperationQueue new] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
         
         _isLoadingFirstPage = NO;
         NSArray *hits = [self _seriesForResponseData:data];

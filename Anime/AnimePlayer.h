@@ -31,4 +31,6 @@
 
 @property(weak) id<AnimePlayerDelegate> delegate;
 
+@property(nonatomic) StreamQuality preferredStreamQuality;
+
 @end

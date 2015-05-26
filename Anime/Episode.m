@@ -9,6 +9,25 @@
 #import "Episode.h"
 #import "Episode_Private.h"
 
+NSString *StreamQualityDescription(StreamQuality q)
+{
+    switch (q) {
+        case StreamQuality240: return @"240";
+        case StreamQuality360: return @"360";
+        case StreamQuality720: return @"720";
+        case StreamQuality1080: return @"1080";
+        default:
+            return @"Unknown";
+    }
+}
+
+@interface Episode ()
+{
+    NSDictionary *_urlsByVideoQuality;
+}
+
+@end
+
 @implementation Episode
 
 #pragma mark - Stubs. To be overridden in subclasses.

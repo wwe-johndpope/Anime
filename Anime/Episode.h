@@ -24,6 +24,8 @@ typedef NS_ENUM(NSInteger, StreamQuality)
     StreamQualityMinUsed = StreamQuality240,
 };
 
+extern NSString *StreamQualityDescription(StreamQuality);
+
 @interface Episode : NSObject
 
 @property(readonly) NSString *episodeID;

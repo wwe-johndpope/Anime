@@ -7,14 +7,17 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Episode.h"
 @import AVKit;
 
-@class Series, Episode, RecentWatch;
+@class Series, RecentWatch;
 
 //@interface PlayerViewController : MPMoviePlayerViewController
 @interface PlayerViewController : AVPlayerViewController
 
 -(instancetype)initWithSeries:(Series *)series episode:(Episode *)episode;
 -(instancetype)initWithWatch:(RecentWatch *)watch;
+
+@property(nonatomic) StreamQuality preferredStreamQuality;
 
 @end

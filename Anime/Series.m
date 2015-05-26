@@ -75,7 +75,7 @@ static SeriesStatus statusForStatusDescription(NSString *desc)
     
     NSURLRequest *req = [NSURLRequest requestWithURL:url];
     
-    [NSURLConnection sendAsynchronousRequest:req queue:[NSOperationQueue new] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+    [NSURLConnection sendAsynchronousKissAnimeRequest:req queue:[NSOperationQueue new] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
         
         NSString *str = [NSString stringWithContentsOfURL:url usedEncoding:nil error:nil];
         HTMLDocument *doc = [HTMLDocument documentWithString:str];
@@ -98,11 +98,21 @@ static SeriesStatus statusForStatusDescription(NSString *desc)
     }
     
     //    NSString *genres = [[[contentNode nodesMatchingSelector:@"div"][3] firstNodeMatchingSelector:@"p"] textContent];
-    NSString *description = [[[contentNode childElementNodes][4] firstNodeMatchingSelector:@"p"] textContent];
+    NSString *description = [[[contentNode childElementNodes][6] firstNodeMatchingSelector:@"p"] textContent];
     
     NSMutableArray *episodes = [NSMutableArray new];
     
-    for (HTMLElement *ep in [contentNode nodesMatchingSelector:@".episode"])
+    // var wra = asp.wrap("base64encodedstuffbBus889fjJL9+jflsk+etcetera"); \n document.write(wra)
+    NSString *encodedContentScript = [[contentNode nodesMatchingSelector:@"script"][2] textContent];
+    encodedContentScript = [encodedContentScript substringFromIndex:1+[encodedContentScript rangeOfString:@"\""].location];
+    encodedContentScript = [encodedContentScript substringToIndex:[encodedContentScript rangeOfString:@"\""].location];
+    
+    NSData *episodeListData = [[NSData alloc] initWithBase64EncodedString:encodedContentScript options:0];
+    NSString *episodeListContent = [[NSString alloc] initWithData:episodeListData encoding:NSUTF8StringEncoding];
+    
+    id episodeList = [HTMLDocument documentWithString:episodeListContent];
+    
+    for (HTMLElement *ep in [episodeList nodesMatchingSelector:@".episode"])
     {
         NSString *episodeID = ep.attributes[@"data-value"];
         NSString *episodeDesc = ep.textContent;
@@ -120,7 +130,7 @@ static SeriesStatus statusForStatusDescription(NSString *desc)
 {
     NSString *_url = [NSString stringWithFormat:@"http://kissanime.com/M/Anime/%@", seriesID];
     NSURL *url = [NSURL URLWithString:_url];
-    [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:url] queue:[NSOperationQueue new] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+    [NSURLConnection sendAsynchronousKissAnimeRequest:[NSURLRequest requestWithURL:url] queue:[NSOperationQueue new] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
         
         id doc = [HTMLDocument documentWithString:[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]];
         
@@ -131,6 +141,41 @@ static SeriesStatus statusForStatusDescription(NSString *desc)
             [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                 completion(s);
             }];
+    }];
+}
+
+-(void)fetchImage:(void (^)(BOOL, NSError *))completion
+{
+    if (!completion)
+        completion = ^(BOOL s, NSError *e){ };
+    
+    if (_seriesImage)
+    {
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            completion(YES, nil);
+        }];
+        return;
+    }
+    
+    NSURLRequest *req = [[NSURLRequest alloc] initWithURL:self.imageURL cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:7.0];
+    [NSURLConnection sendAsynchronousKissAnimeRequest:req queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+       
+        if (!data)
+        {
+            completion(NO, connectionError);
+            return;
+        }
+        
+        UIImage *img = [UIImage imageWithData:data];
+        
+        if (!img)
+        {
+            completion(NO, nil);
+            return;
+        }
+        
+        _seriesImage = img;
+        completion(YES, nil);
     }];
 }
 

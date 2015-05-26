@@ -8,13 +8,9 @@
 
 #import <AVFoundation/AVFoundation.h>
 #import "Episode.h"
+#import "EpisodePlayerItem.h"
 
 @class RecentWatch, Series;
-
-@interface EpisodePlayerItem : AVPlayerItem
-@property(readonly) Episode *episode;
-@property(readonly) StreamQuality playbackQuality;
-@end
 
 @class AnimePlayer;
 
@@ -34,5 +30,7 @@
 +(instancetype)playerWithSeries:(Series *)series episode:(Episode *)episode;
 
 @property(weak) id<AnimePlayerDelegate> delegate;
+
+@property(nonatomic) StreamQuality preferredStreamQuality;
 
 @end

@@ -40,4 +40,11 @@ typedef NS_ENUM(NSInteger, SeriesStatus)
 
 -(void)fetchEpisodes:(void (^)())completion;
 
+// Image loading
+
+#if TARGET_OS_IPHONE
+@property(readonly) UIImage *seriesImage;
+-(void)fetchImage:(void (^)(BOOL success, NSError *error))completion;
+#endif
+
 @end

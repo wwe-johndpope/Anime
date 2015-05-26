@@ -11,21 +11,12 @@
 #import "Recents.h"
 #import "Series.h"
 #import "Episode.h"
-@import MediaPlayer;
 @import AVFoundation;
-
-//#define SHOW_SEL _showPlaybackControlsViewIfNeeded
-//#define HIDE_SEL _hidePlaybackControlsViewIfPossible
-
-#define SHOW_SEL showPlaybackControlsViewForTouchDown
-#define HIDE_SEL hidePlaybackControlsViewForTouchUp
+@import ObjectiveC;
 
 @interface AVPlayerViewController (PrivateAPI)
--(void)SHOW_SEL;
--(void)HIDE_SEL;
 
 -(void)_showOrHidePlaybackControlsView;
-- (double)transitionDuration:(id)arg1;
 
 @end
 
@@ -34,6 +25,7 @@
 {
     Series *_series;
     Episode *_currentEpisode;
+    StreamQuality _preferredStreamQuality;
     
     UILabel *thing;
 }
@@ -71,7 +63,7 @@
     thing.textColor = [UIColor whiteColor];
     thing.lineBreakMode = NSLineBreakByWordWrapping;
     
-//    thing.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin;
+    //    thing.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin;
     
     thing.layer.shadowColor = [UIColor blackColor].CGColor;
     thing.layer.shadowRadius = 2.5;
@@ -110,7 +102,7 @@
     time = CMTimeMakeWithSeconds(MAX(0, CMTimeGetSeconds(time) - 0.5), 1);
     
     [imageGenerator generateCGImagesAsynchronouslyForTimes:@[ [NSValue valueWithCMTime:time] ] completionHandler:^(CMTime requestedTime, CGImageRef image, CMTime actualTime, AVAssetImageGeneratorResult result, NSError *error) {
-       
+        
         CGImageRef imageRef = [imageGenerator copyCGImageAtTime:time actualTime:NULL error:NULL];
         UIImage *thumbnail = [UIImage imageWithCGImage:imageRef];
         CGImageRelease(imageRef);  // CGImageRef won't be released by ARC
@@ -144,11 +136,9 @@
 {
     if ((self = [self init]))
     {
-        Episode *ep = [watch makeEpisode];
-        
         // Ugly.
         [Series fetchSeriesWithID:watch.seriesID completion:^(Series *sr) {
-           
+            
             _series = sr;
             
             self.player = [AnimePlayer playerWithWatch:watch];
@@ -174,12 +164,6 @@
     id val = [self valueForKey:@"_showsPlaybackControlsView"];
     BOOL s = [val boolValue];
     
-    //[self updateHUD];
-    
-//    [UIView animateWithDuration:0.35 delay:0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
-//            thing.alpha = (CGFloat)!!s;
-//    } completion:nil];
-    
     [UIView animateWithDuration:0.42 delay:0 usingSpringWithDamping:.9 initialSpringVelocity:0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
         thing.alpha = (CGFloat)!!s;
     } completion:nil];
@@ -195,8 +179,8 @@
     {
         [self.player play];
     }
-//    else if (event.subtype == UIEventSubtypeRemoteControlPause)
-//        [self.player pause]
+    //    else if (event.subtype == UIEventSubtypeRemoteControlPause)
+    //        [self.player pause]
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -205,6 +189,25 @@
     
     [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
     [[AVAudioSession sharedInstance] setActive:YES error:nil];
+}
+
+-(void)setPlayer:(AnimePlayer *)player
+{
+    if (player)
+        player.preferredStreamQuality = self.preferredStreamQuality;
+    [super setPlayer:player];
+}
+
+-(StreamQuality)preferredStreamQuality
+{
+    return _preferredStreamQuality;
+}
+
+-(void)setPreferredStreamQuality:(StreamQuality)preferredStreamQuality
+{
+    _preferredStreamQuality = preferredStreamQuality;
+    if (self.player)
+        ((AnimePlayer *)self.player).preferredStreamQuality = preferredStreamQuality;
 }
 
 #pragma mark - AnimePlayerDelegate
@@ -257,24 +260,49 @@
 
 @end
 
-#pragma mark - HAXX!
+#pragma mark - Swizzling
 
-@interface AVFullScreenPlaybackControlsViewController : UIViewController
-@end
+IMP ORIGINAL_SFBTUI; // see +[AVKitHacks load]
 
-@implementation AVFullScreenPlaybackControlsViewController (DERP)
-
--(void)_scanForwardButtonTouchUpInside:(id)sender
+void NEW_SFBTUI(NSObject *self, SEL cmd, id sender)
 {
-#warning We might need to call the super for this method.
     // It seems occasionally, after tapping the button, the player thinks the user is still holding
     // down the button, and playback runs fast until the button is tracked over again. Perhaps calling
     // the original method will resolve this issue.
     
-//    [super _scanForwardButtonTouchUpInside:sender];
-    PlayerViewController *c = [self valueForKey:@"_playerViewController"];
+    void (*fn)(NSObject *, SEL, id) = (void (*)(NSObject *, SEL, id))ORIGINAL_SFBTUI;
+    fn(self, cmd, sender);
+    
+    NSString *key = @"_plaH!yerVH!iewCH!ontrH!olleH!r";
+    key = [key stringByReplacingOccurrencesOfString:@"H!" withString:@""];
+    
+    PlayerViewController *c = [self valueForKey:key];
     [c nextTrack];
 }
 
+@interface AVKitHacks : NSObject
 @end
 
+@implementation AVKitHacks
+
++(void)load
+{
+    // Obfuscate our references to private API.
+    
+    // Class AVFullScreenPlaybackControlsViewController
+    // Method _scanForwardButtonTouchUpInside:
+    
+    NSString *class_name = [@"AVFW.ullSW.creeW.nPlaW.ybacW.kConW.trolW.sVieW.wConW.trolW.ler" stringByReplacingOccurrencesOfString:@"W." withString:@""];
+    NSString *method_name = [@"_scaW.nForW.wardW.ButtW.onToW.uchUW.pInsW.ide:" stringByReplacingOccurrencesOfString:@"W." withString:@""];
+    
+    Class cl = NSClassFromString(class_name);
+    SEL sel = NSSelectorFromString(method_name);
+    IMP newimp = (IMP)NEW_SFBTUI;
+    
+    if (cl)
+        ORIGINAL_SFBTUI = class_replaceMethod(cl, sel, newimp, "@");
+    else
+        NSLog(@"Class AVFullScreenPlaybackControlsViewController doesn't exist. Not swizzling.");
+}
+
+@end

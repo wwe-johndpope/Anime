@@ -9,6 +9,18 @@
 #import "Episode.h"
 #import "HTMLReader.h"
 
+NSString *StreamQualityDescription(StreamQuality q)
+{
+    switch (q) {
+        case StreamQuality240: return @"240";
+        case StreamQuality360: return @"360";
+        case StreamQuality720: return @"720";
+        case StreamQuality1080: return @"1080";
+        default:
+            return @"Unknown";
+    }
+}
+
 @interface Episode ()
 {
     NSDictionary *_urlsByVideoQuality;
@@ -65,10 +77,8 @@
     req.HTTPMethod = @"POST";
     req.HTTPBody = [bodyString dataUsingEncoding:NSUTF8StringEncoding];
     
-    [NSURLConnection sendAsynchronousRequest:req queue:[NSOperationQueue new] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-        
-
-        
+    [NSURLConnection sendAsynchronousKissAnimeRequest:req queue:[NSOperationQueue new] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+        data = [[NSData alloc] initWithBase64EncodedData:data options:0];
         NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
         
         HTMLDocument *doc = [HTMLDocument documentWithString:string];
@@ -98,9 +108,7 @@
         _allStreamQualities = [dict.allKeys sortedArrayUsingSelector:@selector(compare:)];
         
         if (completion)
-            dispatch_async(dispatch_get_main_queue(), ^{
-                completion();
-            });
+            dispatch_async(dispatch_get_main_queue(), completion);
     }];
 }
 

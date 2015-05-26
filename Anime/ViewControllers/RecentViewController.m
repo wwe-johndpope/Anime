@@ -65,7 +65,10 @@
 @interface RecentViewController ()<UISearchControllerDelegate, RecentTableViewCellDelegate>
 {
     UISearchController *cont;
+    RecentWatch *_actionSheetWatch;
+    NSArray *_actionSheetQualities;
 }
+
 @end
 
 @implementation RecentViewController
@@ -109,9 +112,11 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(watchesChanged:) name:RecentsWasChangedNotification object:nil];
 }
 
--(void)continueWatching:(RecentWatch *)watch
+-(void)continueWatching:(RecentWatch *)watch quality:(StreamQuality)quality
 {
-    id c = [[PlayerViewController alloc] initWithWatch:watch];
+    PlayerViewController *c = [[PlayerViewController alloc] initWithWatch:watch];
+    c.preferredStreamQuality = quality;
+    
     self.modalPresentationCapturesStatusBarAppearance = YES;
     [self presentViewController:c animated:YES completion:^{
 //        self.tableView.contentOffset = CGPointZero;
@@ -171,6 +176,52 @@
             }];
         }
     }
+}
+
+-(IBAction)longPress:(UILongPressGestureRecognizer *)sender
+{
+    if (sender.state != UIGestureRecognizerStateBegan)
+        return;
+    
+    CGPoint point = [sender locationInView:self.tableView];
+    NSIndexPath *idx = [self.tableView indexPathForRowAtPoint:point];
+    
+    // Ignore long presses on the background.
+    if (!idx)
+        return;
+    
+    RecentWatch *watch = [[Recents defaultRecentStore] watches][idx.row];
+    _actionSheetWatch = watch;
+    
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:watch.seriesTitle message:watch.episodeTitle preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    if (!_actionSheetQualities)
+        _actionSheetQualities = @[
+                                  @(StreamQuality240),
+                                  @(StreamQuality360),
+                                  @(StreamQuality720),
+                                  @(StreamQuality1080),
+                                  ];
+    
+    for (NSNumber *quality in _actionSheetQualities)
+    {
+        StreamQuality q = (StreamQuality)quality.integerValue;
+        [alert addAction:[UIAlertAction actionWithTitle:StreamQualityDescription(q) style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            [self continueWatching:watch quality:q];
+        }]];
+    }
+    
+    [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+    
+    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:idx];
+    CGRect rect;
+    rect.size = CGSizeMake(1, 1);
+    rect.origin = [sender locationInView:cell];
+    
+    alert.popoverPresentationController.sourceRect = rect;
+    alert.popoverPresentationController.sourceView = cell;
+    
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 #pragma mark - Notifications
@@ -296,7 +347,7 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     RecentWatch *w = [[Recents defaultRecentStore] watches][indexPath.row];
-    [self continueWatching:w];
+    [self continueWatching:w quality:StreamQualityUnknown];
 }
 
 @end

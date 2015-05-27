@@ -10,6 +10,9 @@
 		63233C3F1AD4CF74000DC74D /* NSURLConnection+KissAnime.m in Sources */ = {isa = PBXBuildFile; fileRef = 63233C3E1AD4CF74000DC74D /* NSURLConnection+KissAnime.m */; };
 		63294E251A46B7E8004BFCD6 /* EpisodeURLAsset.m in Sources */ = {isa = PBXBuildFile; fileRef = 63294E241A46B7E8004BFCD6 /* EpisodeURLAsset.m */; };
 		63294E281A46B915004BFCD6 /* EpisodePlayerItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 63294E271A46B915004BFCD6 /* EpisodePlayerItem.m */; };
+		635558821B14311E00413155 /* KissCartoonSeriesRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 635558811B14311E00413155 /* KissCartoonSeriesRequest.m */; };
+		635558851B14377C00413155 /* KissCartoonSeries.m in Sources */ = {isa = PBXBuildFile; fileRef = 635558841B14377C00413155 /* KissCartoonSeries.m */; };
+		635558881B14BA6600413155 /* KissCartoonEpisode.m in Sources */ = {isa = PBXBuildFile; fileRef = 635558871B14BA6600413155 /* KissCartoonEpisode.m */; };
 		63669F041A10858D00739484 /* SearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 63669F031A10858D00739484 /* SearchViewController.m */; };
 		63669F0C1A10B2DF00739484 /* DataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 63669F0B1A10B2DF00739484 /* DataStore.m */; };
 		63669F0F1A11588400739484 /* AnimePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 63669F0E1A11588400739484 /* AnimePlayer.m */; };
@@ -112,6 +115,12 @@
 		63294E241A46B7E8004BFCD6 /* EpisodeURLAsset.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EpisodeURLAsset.m; sourceTree = "<group>"; };
 		63294E261A46B915004BFCD6 /* EpisodePlayerItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EpisodePlayerItem.h; sourceTree = "<group>"; };
 		63294E271A46B915004BFCD6 /* EpisodePlayerItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EpisodePlayerItem.m; sourceTree = "<group>"; };
+		635558801B14311E00413155 /* KissCartoonSeriesRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KissCartoonSeriesRequest.h; path = Model/Sites/KissCartoon/KissCartoonSeriesRequest.h; sourceTree = "<group>"; };
+		635558811B14311E00413155 /* KissCartoonSeriesRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KissCartoonSeriesRequest.m; path = Model/Sites/KissCartoon/KissCartoonSeriesRequest.m; sourceTree = "<group>"; };
+		635558831B14377C00413155 /* KissCartoonSeries.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KissCartoonSeries.h; path = Model/Sites/KissCartoon/KissCartoonSeries.h; sourceTree = "<group>"; };
+		635558841B14377C00413155 /* KissCartoonSeries.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KissCartoonSeries.m; path = Model/Sites/KissCartoon/KissCartoonSeries.m; sourceTree = "<group>"; };
+		635558861B14BA6600413155 /* KissCartoonEpisode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KissCartoonEpisode.h; path = Model/Sites/KissCartoon/KissCartoonEpisode.h; sourceTree = "<group>"; };
+		635558871B14BA6600413155 /* KissCartoonEpisode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KissCartoonEpisode.m; path = Model/Sites/KissCartoon/KissCartoonEpisode.m; sourceTree = "<group>"; };
 		63669F021A10858D00739484 /* SearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SearchViewController.h; path = ViewControllers/SearchViewController.h; sourceTree = "<group>"; };
 		63669F031A10858D00739484 /* SearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SearchViewController.m; path = ViewControllers/SearchViewController.m; sourceTree = "<group>"; };
 		63669F0A1A10B2DF00739484 /* DataStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DataStore.h; path = Model/DataStore.h; sourceTree = "<group>"; };
@@ -188,9 +197,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		635558791B1430F500413155 /* KissCartoon */ = {
+			isa = PBXGroup;
+			children = (
+				635558801B14311E00413155 /* KissCartoonSeriesRequest.h */,
+				635558811B14311E00413155 /* KissCartoonSeriesRequest.m */,
+				635558831B14377C00413155 /* KissCartoonSeries.h */,
+				635558841B14377C00413155 /* KissCartoonSeries.m */,
+				635558861B14BA6600413155 /* KissCartoonEpisode.h */,
+				635558871B14BA6600413155 /* KissCartoonEpisode.m */,
+			);
+			name = KissCartoon;
+			sourceTree = "<group>";
+		};
 		636D81911AD6401800FCE205 /* Sites */ = {
 			isa = PBXGroup;
 			children = (
+				635558791B1430F500413155 /* KissCartoon */,
 				63AD006A1AFC69BD000ECB7E /* KissAnime */,
 				63AD005C1AFC5ED0000ECB7E /* CartoonHDMovie */,
 				636D81921AD6404400FCE205 /* CartoonHD */,
@@ -528,6 +551,7 @@
 				63AD00741AFC7B1D000ECB7E /* KissAnimeEpisode.m in Sources */,
 				63F784801A0C87CD001DC623 /* AppDelegate.m in Sources */,
 				63AD006D1AFC69E2000ECB7E /* KissAnimeSeriesRequest.m in Sources */,
+				635558821B14311E00413155 /* KissCartoonSeriesRequest.m in Sources */,
 				63F784CD1A1033ED001DC623 /* RecentViewController.m in Sources */,
 				63AD00701AFC6C2B000ECB7E /* KissAnimeSeries.m in Sources */,
 				636D81951AD6409200FCE205 /* CartoonHDSeriesRequest.m in Sources */,
@@ -535,7 +559,9 @@
 				63669F0C1A10B2DF00739484 /* DataStore.m in Sources */,
 				636D81901AD63FAC00FCE205 /* Site.m in Sources */,
 				63AD00691AFC6300000ECB7E /* CartoonHDMovieSeries.m in Sources */,
+				635558851B14377C00413155 /* KissCartoonSeries.m in Sources */,
 				63294E281A46B915004BFCD6 /* EpisodePlayerItem.m in Sources */,
+				635558881B14BA6600413155 /* KissCartoonEpisode.m in Sources */,
 				63669F0F1A11588400739484 /* AnimePlayer.m in Sources */,
 				63F7847D1A0C87CD001DC623 /* main.m in Sources */,
 				636D819B1AD642BD00FCE205 /* CartoonHDSeries.m in Sources */,

@@ -12,6 +12,7 @@
 #import "Model/Sites/CartoonHD/CartoonHDSeries.h"
 #import "Model/Sites/CartoonHDMovie/CartoonHDMovieSeries.h"
 #import "Model/Sites/KissAnime/KissAnimeSeries.h"
+#import "Model/Sites/KissCartoon/KissCartoonSeries.h"
 
 @implementation Series
 
@@ -30,6 +31,7 @@
              [CartoonHDSeries class],
              [KissAnimeSeries class],
              [CartoonHDMovieSeries class],
+             [KissCartoonSeries class],
              ];
 }
 

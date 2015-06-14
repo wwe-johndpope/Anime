@@ -103,7 +103,7 @@ static SeriesStatus statusForStatusDescription(NSString *desc)
     NSMutableArray *episodes = [NSMutableArray new];
     
     // var wra = asp.wrap("base64encodedstuffbBus889fjJL9+jflsk+etcetera"); \n document.write(wra)
-    NSString *encodedContentScript = [[contentNode nodesMatchingSelector:@"script"][2] textContent];
+    NSString *encodedContentScript = [[contentNode nodesMatchingSelector:@"script"][0] textContent];
     encodedContentScript = [encodedContentScript substringFromIndex:1+[encodedContentScript rangeOfString:@"\""].location];
     encodedContentScript = [encodedContentScript substringToIndex:[encodedContentScript rangeOfString:@"\""].location];
     

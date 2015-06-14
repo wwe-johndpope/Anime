@@ -36,6 +36,7 @@
     NSString *page = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     HTMLDocument *doc = [HTMLDocument documentWithString:page];
     HTMLNode *form = [doc firstNodeMatchingSelector:@"#challenge-form"];
+    NSString *root_url = [self _baseURLForURL:request.URL];
     
     NSString *jscode = nil;
     
@@ -61,7 +62,7 @@
     JSContext *ctx = [[JSContext alloc] initWithVirtualMachine:[JSVirtualMachine new]];
     
     ctx[@"elems"] = [JSValue valueWithObject:@{} inContext:ctx];
-    ctx[@"root_url"] = [JSValue valueWithObject:@"http://kissanime.com/" inContext:ctx];
+    ctx[@"root_url"] = [JSValue valueWithObject:root_url inContext:ctx];
     
     [ctx evaluateScript:prefix];
     [ctx evaluateScript:jscode];
@@ -77,7 +78,7 @@
             pass = input[@"value"];
     }
     
-    NSString *redirectURL = [NSString stringWithFormat:@"http://kissanime.com/cdn-cgi/l/chk_jschl?jschl_vc=%@&pass=%@&jschl_answer=%@", jschl_vc, pass, jschl_answer];
+    NSString *redirectURL = [NSString stringWithFormat:@"%@cdn-cgi/l/chk_jschl?jschl_vc=%@&pass=%@&jschl_answer=%@", root_url, jschl_vc, pass, jschl_answer];
     NSMutableURLRequest *newReq = [request mutableCopy];
     newReq.URL = [NSURL URLWithString:redirectURL];
     [newReq setValue:request.URL.description forHTTPHeaderField:@"Referer"];
@@ -88,6 +89,11 @@
                 handler(response, data, connectionError);
         }];
     });
+}
+
++(NSString *)_baseURLForURL:(NSURL *)url
+{
+    return [NSString stringWithFormat:@"%@://%@/", url.scheme, url.host];
 }
 
 @end

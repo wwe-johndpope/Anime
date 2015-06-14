@@ -9,6 +9,7 @@
 #import "KissCartoonEpisode.h"
 #import "HTMLReader.h"
 #import "Episode_Private.h"
+#import "NSURLConnection+KissAnime.h"
 
 @interface KissCartoonEpisode ()
 {
@@ -73,7 +74,7 @@
 {
     NSURLRequest *req = [NSURLRequest requestWithURL:_detailURL];
     
-    [NSURLConnection sendAsynchronousRequest:req queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+    [NSURLConnection sendAsynchronousKissAnimeRequest:req queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
         
         NSString *text = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
         HTMLDocument *document = [HTMLDocument documentWithString:text];

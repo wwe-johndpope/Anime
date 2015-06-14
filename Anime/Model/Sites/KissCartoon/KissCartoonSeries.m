@@ -10,6 +10,7 @@
 #import "KissCartoonEpisode.h"
 #import "HTMLReader.h"
 #import "HTMLTextNode.h"
+#import "NSURLConnection+KissAnime.h"
 
 static NSString *kKissCartoonSeriesPageFormat = @"http://kisscartoon.me/Cartoon/%@";
 
@@ -213,7 +214,7 @@ episodes = _episodes;
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:kKissCartoonSeriesPageFormat, self.seriesID]];
     NSURLRequest *req = [NSURLRequest requestWithURL:url];
     
-    [NSURLConnection sendAsynchronousRequest:req queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+    [NSURLConnection sendAsynchronousKissAnimeRequest:req queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
         
         NSString *text = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
         HTMLDocument *document = [HTMLDocument documentWithString:text];

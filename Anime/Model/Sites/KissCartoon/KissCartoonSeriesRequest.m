@@ -9,6 +9,7 @@
 #import "KissCartoonSeriesRequest.h"
 #import "HTMLReader.h"
 #import "KissCartoonSeries.h"
+#import "NSURLConnection+KissAnime.h"
 
 static NSString * const kKissCartoonSearchURL = @"http://kisscartoon.me/Search/Cartoon";
 static NSString * const kKissCartoonSearchRelativeURL = @"/Search/Cartoon";
@@ -82,7 +83,7 @@ static NSString * const kKissCartoonSearchRelativeURL = @"/Search/Cartoon";
 {
     NSAssert(self.firstPageRequest, @"KissCartoonSeriesRequest must have an NSURLRequest object when being queried.");
     
-    [NSURLConnection sendAsynchronousRequest:self.firstPageRequest queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+    [NSURLConnection sendAsynchronousKissAnimeRequest:self.firstPageRequest queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
         
         NSString *text = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
         HTMLDocument *document = [HTMLDocument documentWithString:text];

@@ -42,7 +42,7 @@
         // link, but it seems that's not necessary to load the page.
         NSRange qRange = [url rangeOfString:@"?" options:NSBackwardsSearch];
         if (qRange.location != NSNotFound)
-            idRange.length = qRange.location - idRange.location - 1;
+            idRange.length = qRange.location - idRange.location;
         
         _episodeID = [url substringWithRange:idRange];
         

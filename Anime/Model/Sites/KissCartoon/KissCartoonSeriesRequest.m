@@ -38,18 +38,13 @@ static NSString * const kKissCartoonSearchRelativeURL = @"/Search/Cartoon";
 
 +(NSArray *)seriesListForResultsDocument:(HTMLDocument *)document
 {
-    HTMLElement *listingTable = [document firstNodeMatchingSelector:@".listing"];
-    NSArray *tableRows = [listingTable nodesMatchingSelector:@"tr"];
+    HTMLElement *listing = [document firstNodeMatchingSelector:@".item-list"];
+    NSArray *seriesDivs = [listing childElementNodes];
     NSMutableArray *list = [NSMutableArray new];
     
-    // The first two rows of the table are a header and a spacer.
-    NSEnumerator *ptr = [tableRows objectEnumerator];
-    [ptr nextObject];
-    [ptr nextObject];
-    
-    for (HTMLElement *seriesTR in ptr)
+    for (HTMLElement *seriesDiv in seriesDivs)
     {
-        Series *series = [[KissCartoonSeries alloc] initWithSeriesTR:seriesTR];
+        Series *series = [[KissCartoonSeries alloc] initWithSeriesDiv:seriesDiv];
         [list addObject:series];
     }
     

@@ -14,7 +14,6 @@
 @interface KissCartoonEpisode ()
 {
     NSString *_episodeID, *_episodeDescription;
-    NSURL *_detailURL;
 }
 -(void)setStreamURLsFromDetailPage:(HTMLDocument *)document;
 @end
@@ -30,40 +29,7 @@
         HTMLElement *link = [row firstNodeMatchingSelector:@"a"];
         
         NSString *title = [link.textContent stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        NSString *url = link[@"href"];
-        
-        _detailURL = [NSURL URLWithString:url relativeToURL:[NSURL URLWithString:@"http://kisscartoon.me"]];
-        
-        NSRange idRange = [url rangeOfString:@"/" options:NSBackwardsSearch];
-        idRange.location++;
-        idRange.length--;
-        
-        // There seems to be something like ?id=12345 appended to the end of the
-        // link, but it seems that's not necessary to load the page.
-        NSRange qRange = [url rangeOfString:@"?" options:NSBackwardsSearch];
-        if (qRange.location != NSNotFound)
-            idRange.length = qRange.location - idRange.location;
-        
-        _episodeID = [url substringWithRange:idRange];
-        
-        // The link texts all seem to have the title of the series prepended, e.g.
-        // "Futurama Season 01 Episode 001 - Space Pilot 3000". Let's try to remove that.
-        
-        // If we were given a series title, let's dumbly remove the same length of
-        // characters, plus one for the space.
-        if (seriesTitle)
-            title = [title substringFromIndex:(seriesTitle.length + 1)];
-        
-        // Otherwise, dumbly by taking the substring starting with "Episode." At the time of
-        // writing this comment, "Robot Chicken Star Wars Episode {II,III}" are
-        // the only series on KissCartoon whose titles have the word "Episode",
-        // so I'm going to call that good enough for most cases.
-        else
-        {
-            NSRange epRange = [title rangeOfString:@"Episode"];
-            if (epRange.location != NSNotFound)
-                title = [title substringFromIndex:epRange.location];
-        }
+        _episodeID = link[@"data-value"];
         
         _episodeDescription = title;
     }
@@ -72,7 +38,11 @@
 
 -(void)fetchStreamURLs:(void (^)())completion
 {
-    NSURLRequest *req = [NSURLRequest requestWithURL:_detailURL];
+    NSURL *url = [NSURL URLWithString:@"http://kisscartoon.me/Mobile/GetEpisode"];
+    NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:url];
+    req.HTTPMethod = @"POST";
+    req.HTTPBody = [[NSString stringWithFormat:@"eID=%@", _episodeID] dataUsingEncoding:NSUTF8StringEncoding];
+    //[req setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
     
     [NSURLConnection sendAsynchronousKissAnimeRequest:req queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
         
@@ -86,22 +56,29 @@
     }];
 }
 
+-(StreamQuality)_qualityForLinkText:(NSString *)text;
+{
+    // 1920x1024.mp4
+    text = [text substringFromIndex:(1 + [text rangeOfString:@"x"].location)];
+    // 1024.mp4
+    text = [text substringToIndex:[text rangeOfString:@"."].location];
+    // 1024
+    
+    NSInteger height = [text integerValue];
+    
+    return [self.class _qualityForVideoHeight:height];
+}
+
 -(void)setStreamURLsFromDetailPage:(HTMLDocument *)document
 {
-    HTMLElement *select = [document firstNodeMatchingSelector:@"#selectQuality"];
+    NSArray *links = [document nodesMatchingSelector:@"a"];
     NSMutableArray *qualities = [NSMutableArray new];
     NSMutableArray *streams = [NSMutableArray new];
     
-    for (HTMLElement *option in select.childElementNodes)
+    for (HTMLElement *link in links)
     {
-        NSInteger size = option.textContent.integerValue;
-        NSString *value = option[@"value"]; // base64 encoded URL
-        
-        NSData *urlData = [[NSData alloc] initWithBase64EncodedString:value options:0];
-        value = [[NSString alloc] initWithData:urlData encoding:NSUTF8StringEncoding];
-        
-        [qualities addObject:@([self.class _qualityForVideoHeight:size])];
-        [streams addObject:[NSURL URLWithString:value]];
+        [qualities addObject:@([self _qualityForLinkText:[link textContent]])];
+        [streams addObject:[NSURL URLWithString:link[@"href"]]];
     }
     
     [self _setVideoStreams:streams forQualities:qualities];

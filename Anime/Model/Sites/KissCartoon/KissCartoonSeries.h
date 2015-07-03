@@ -12,7 +12,7 @@
 
 @interface KissCartoonSeries : Series
 
--(instancetype)initWithSeriesTR:(HTMLElement *)data;
+-(instancetype)initWithSeriesDiv:(HTMLElement *)data;
 -(instancetype)initWithDetailPage:(HTMLDocument *)page;
 
 @end

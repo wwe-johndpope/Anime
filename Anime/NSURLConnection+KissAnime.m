@@ -61,7 +61,7 @@
     JSContext *ctx = [[JSContext alloc] initWithVirtualMachine:[JSVirtualMachine new]];
     
     ctx[@"elems"] = [JSValue valueWithObject:@{} inContext:ctx];
-    ctx[@"root_url"] = [JSValue valueWithObject:@"http://kissanime.com/" inContext:ctx];
+    ctx[@"root_url"] = [JSValue valueWithObject:@"http://kissanime.to/" inContext:ctx];
     
     [ctx evaluateScript:prefix];
     [ctx evaluateScript:jscode];
@@ -77,12 +77,12 @@
             pass = input[@"value"];
     }
     
-    NSString *redirectURL = [NSString stringWithFormat:@"http://kissanime.com/cdn-cgi/l/chk_jschl?jschl_vc=%@&pass=%@&jschl_answer=%@", jschl_vc, pass, jschl_answer];
+    NSString *redirectURL = [NSString stringWithFormat:@"http://kissanime.to/cdn-cgi/l/chk_jschl?jschl_vc=%@&pass=%@&jschl_answer=%@", jschl_vc, pass, jschl_answer];
     NSMutableURLRequest *newReq = [request mutableCopy];
     newReq.URL = [NSURL URLWithString:redirectURL];
     [newReq setValue:request.URL.description forHTTPHeaderField:@"Referer"];
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self sendAsynchronousRequest:newReq queue:queue completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
             if (handler)
                 handler(response, data, connectionError);

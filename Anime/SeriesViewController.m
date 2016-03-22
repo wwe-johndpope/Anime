@@ -124,6 +124,12 @@
 {
     if (sender.state == UIGestureRecognizerStateEnded)
     {
+        // Keep us from getting "stuck" if we're showing the quality UIAlertViewController.
+        // (Otherwise, when the user taps the shade not covered by this view or the popover,
+        // the popover is dismissed and the gesture is uninstalled.)
+        if (self.presentedViewController != nil)
+            return;
+        
         // If we're not in the view hierarchy (e.g. we've presented the movie player),
         // the tap gesture should not do anything. Ideally we should be smarter and disable
         // the gesture when we know it shouldn't be there.

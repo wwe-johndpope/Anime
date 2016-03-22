@@ -70,7 +70,7 @@ static SeriesStatus statusForStatusDescription(NSString *desc)
 
 -(void)fetchEpisodes:(void (^)())completion
 {
-    NSString *_url = [NSString stringWithFormat:@"http://kissanime.com%@", _docpath];
+    NSString *_url = [NSString stringWithFormat:@"http://kissanime.to%@", _docpath];
     NSURL *url = [NSURL URLWithString:_url];
     
     NSURLRequest *req = [NSURLRequest requestWithURL:url];
@@ -103,7 +103,7 @@ static SeriesStatus statusForStatusDescription(NSString *desc)
     NSMutableArray *episodes = [NSMutableArray new];
     
     // var wra = asp.wrap("base64encodedstuffbBus889fjJL9+jflsk+etcetera"); \n document.write(wra)
-    NSString *encodedContentScript = [[contentNode nodesMatchingSelector:@"script"][2] textContent];
+    NSString *encodedContentScript = [[contentNode nodesMatchingSelector:@"script"][0] textContent];
     encodedContentScript = [encodedContentScript substringFromIndex:1+[encodedContentScript rangeOfString:@"\""].location];
     encodedContentScript = [encodedContentScript substringToIndex:[encodedContentScript rangeOfString:@"\""].location];
     
@@ -128,7 +128,7 @@ static SeriesStatus statusForStatusDescription(NSString *desc)
 
 +(void)fetchSeriesWithID:(NSString *)seriesID completion:(void (^)(Series *))completion
 {
-    NSString *_url = [NSString stringWithFormat:@"http://kissanime.com/M/Anime/%@", seriesID];
+    NSString *_url = [NSString stringWithFormat:@"http://kissanime.to/M/Anime/%@", seriesID];
     NSURL *url = [NSURL URLWithString:_url];
     [NSURLConnection sendAsynchronousKissAnimeRequest:[NSURLRequest requestWithURL:url] queue:[NSOperationQueue new] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
         

@@ -70,7 +70,7 @@ static SeriesStatus statusForStatusDescription(NSString *desc)
 
 -(void)fetchEpisodes:(void (^)())completion
 {
-    NSString *_url = [NSString stringWithFormat:@"http://kissanime.com%@", _docpath];
+    NSString *_url = [NSString stringWithFormat:@"http://kissanime.to%@", _docpath];
     NSURL *url = [NSURL URLWithString:_url];
     
     NSURLRequest *req = [NSURLRequest requestWithURL:url];
@@ -128,7 +128,7 @@ static SeriesStatus statusForStatusDescription(NSString *desc)
 
 +(void)fetchSeriesWithID:(NSString *)seriesID completion:(void (^)(Series *))completion
 {
-    NSString *_url = [NSString stringWithFormat:@"http://kissanime.com/M/Anime/%@", seriesID];
+    NSString *_url = [NSString stringWithFormat:@"http://kissanime.to/M/Anime/%@", seriesID];
     NSURL *url = [NSURL URLWithString:_url];
     [NSURLConnection sendAsynchronousKissAnimeRequest:[NSURLRequest requestWithURL:url] queue:[NSOperationQueue new] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
         

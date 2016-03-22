@@ -45,7 +45,7 @@
 
 -(void)fetchStreamURLs:(void (^)())completion
 {
-    NSURL *url = [NSURL URLWithString:@"http://kissanime.com/Mobile/GetEpisode"];
+    NSURL *url = [NSURL URLWithString:@"https://kissanime.to/Mobile/GetEpisode"];
     NSMutableURLRequest *req = [[NSMutableURLRequest alloc] initWithURL:url];
     
     

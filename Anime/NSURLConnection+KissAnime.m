@@ -83,7 +83,7 @@
     newReq.URL = [NSURL URLWithString:redirectURL];
     [newReq setValue:request.URL.description forHTTPHeaderField:@"Referer"];
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self sendAsynchronousRequest:newReq queue:queue completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
             if (handler)
                 handler(response, data, connectionError);

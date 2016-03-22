@@ -9,7 +9,6 @@
 #import "KissCartoonSeries.h"
 #import "KissCartoonEpisode.h"
 #import "HTMLReader.h"
-#import "HTMLTextNode.h"
 #import "NSURLConnection+KissAnime.h"
 
 static NSString *kKissCartoonSeriesPageFormat = @"http://kisscartoon.me/Cartoon/%@";

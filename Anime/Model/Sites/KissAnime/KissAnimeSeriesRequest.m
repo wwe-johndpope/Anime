@@ -111,7 +111,7 @@
 
 -(NSURLRequest *)_firstPageNetworkRequest
 {
-    NSString *urlString = [NSString stringWithFormat:@"http://kissanime.com/M?%@", [self _paramString:NO]];
+    NSString *urlString = [NSString stringWithFormat:@"http://kissanime.to/M?%@", [self _paramString:NO]];
     NSURL *url = [NSURL URLWithString:urlString];
     NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:url];
     req.HTTPMethod = @"GET";
@@ -121,7 +121,7 @@
 
 -(NSURLRequest *)_nextPageNetworkRequest
 {
-    NSString *urlString = @"http://kissanime.com/Mobile/GetNextUpdateAnime";
+    NSString *urlString = @"http://kissanime.to/Mobile/GetNextUpdateAnime";
     NSURL *url = [NSURL URLWithString:urlString];
     NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:url];
     req.HTTPMethod = @"POST";

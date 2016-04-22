@@ -9,8 +9,6 @@
 #import "Series.h"
 #import "Episode.h"
 #import "Site.h"
-#import "Model/Sites/CartoonHD/CartoonHDSeries.h"
-#import "Model/Sites/CartoonHDMovie/CartoonHDMovieSeries.h"
 #import "Model/Sites/KissAnime/KissAnimeSeries.h"
 #import "Model/Sites/KissCartoon/KissCartoonSeries.h"
 
@@ -28,9 +26,7 @@
 +(NSArray *)seriesLookupClasses
 {
     return @[
-             [CartoonHDSeries class],
              [KissAnimeSeries class],
-             [CartoonHDMovieSeries class],
              [KissCartoonSeries class],
              ];
 }

@@ -11,8 +11,6 @@
 #import "SeriesRequest.h"
 #import "SeriesViewController.h"
 #import "PlayerViewController.h"
-#import "CartoonHDSeriesRequest.h"
-#import "CartoonHDMovieSeriesRequest.h"
 #import "KissAnimeSeriesRequest.h"
 #import "KissCartoonSeriesRequest.h"
 
@@ -115,8 +113,6 @@
 //    req = [CartoonHDSeriesRequest searchSeriesRequestForQuery:searchBar.text];
     
     reqs = @[
-             [CartoonHDSeriesRequest searchSeriesRequestForQuery:searchBar.text],
-             [CartoonHDMovieSeriesRequest searchSeriesRequestForQuery:searchBar.text],
              [KissAnimeSeriesRequest searchSeriesRequestForQuery:searchBar.text],
              [KissCartoonSeriesRequest searchSeriesRequestForQuery:searchBar.text],
              ];

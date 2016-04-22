@@ -15,7 +15,7 @@
 {
     NSString *_episodeID, *_episodeDescription;
 }
--(void)setStreamURLsFromDetailPage:(HTMLDocument *)document;
+-(void)setStreamURLsFromEpisodeDetails:(HTMLDocument *)document;
 @end
 
 @implementation KissCartoonEpisode
@@ -49,7 +49,7 @@
         NSString *text = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
         HTMLDocument *document = [HTMLDocument documentWithString:text];
         
-        [self setStreamURLsFromDetailPage:document];
+        [self setStreamURLsFromEpisodeDetails:document];
         
         if (completion)
             dispatch_async(dispatch_get_main_queue(), completion);
@@ -69,7 +69,7 @@
     return [self.class _qualityForVideoHeight:height];
 }
 
--(void)setStreamURLsFromDetailPage:(HTMLDocument *)document
+-(void)setStreamURLsFromEpisodeDetails:(HTMLDocument *)document
 {
     NSArray *links = [document nodesMatchingSelector:@"a"];
     NSMutableArray *qualities = [NSMutableArray new];
@@ -77,6 +77,11 @@
     
     for (HTMLElement *link in links)
     {
+        // Hackish guess to avoid some 'javascript:' links that might be shown. These links allow the user to select
+        // from a few video sources (KissCartoon, Openload, Stream). We don't really care though. The XHR content here
+        // still contains the links to the KissCartooon videos by default, so we can just use that.
+        if (![link.attributes[@"href"] hasPrefix:@"http"])
+            continue;
         [qualities addObject:@([self _qualityForLinkText:[link textContent]])];
         [streams addObject:[NSURL URLWithString:link[@"href"]]];
     }
